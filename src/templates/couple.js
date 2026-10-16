@@ -1,35 +1,36 @@
 import { cols, esc, hex, imgSrc, jsonForScript, lines, multi, ymd } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
-import { fxDefaults, fxGroup, fxOf } from './fx.js'
+import { MOODS, fxDefaults, fxGroup, fxGroupSoft, fxOf } from './fx.js'
 
 // Template: 자캐 커플 아카이브 — two characters with their own colours, a D+ counter with progress to the next
 // milestone, an automatic anniversary list, timeline, Q&A and gallery.
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'rose', label: '로즈 밀크', bg: '#fff3f0', card: '#ffffff', fg: '#3a2226', accent: '#e5566d', accent2: '#ffd5cf' },
   { id: 'night', label: '별밤', bg: '#0f1230', card: '#1a1e47', fg: '#eef0ff', accent: '#ffc857', accent2: '#4651c7', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'soda', label: '소다 블루', bg: '#eef7ff', card: '#ffffff', fg: '#1b2a3d', accent: '#3b8df0', accent2: '#ffd1e6' },
   { id: 'wine', label: '와인', bg: '#1c0d14', card: '#2a1520', fg: '#f6e8ee', accent: '#e0587a', accent2: '#7a1f3d', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'two', label: '새벽 두 시', bg: '#140f1f', card: '#211832', fg: '#f3ecff', accent: '#ff8fb1', accent2: '#6a4bb5', fxStars: true, fxCursor: true, fxGrain: true, skin: 'line' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS]
 
 const defaults = {
-  title: '서하 × 하윤',
-  subtitle: '새벽 천문대에서 시작된 두 사람의 기록',
+  title: '치즈 × 고등어',
+  subtitle: '달무리 골목 담벼락에서 시작된 두 고양이의 기록',
   date: '2025-03-14',
   dateLabel: '함께한 지',
-  nameA: '이서하',
-  infoA: '새벽 천문대의 관측 기사 · 11월 3일생',
+  nameA: '치즈',
+  infoA: '담벼락 순찰대장 · 3월 3일생',
   imageA: '',
   colorA: '#e5566d',
-  quoteA: '하윤이 옆에 있으면 길을 잃어도 괜찮아.',
-  nameB: '정하윤',
-  infoB: '천문대 정비사 · 6월 21일생',
+  quoteA: '고등어가 옆에 있으면 비 오는 날도 괜찮아.',
+  nameB: '고등어',
+  infoB: '골목 정보통 · 7월 7일생',
   imageB: '',
   colorB: '#4a8df0',
-  quoteB: '서하가 올려다보는 하늘을 같이 보고 싶었어.',
-  story: '같은 천문대에서 일하던 두 사람은 별똥별이 많이 떨어지던 밤에 처음으로 서로의 이름을 불렀어요. 이 페이지는 그날부터 지금까지의 이야기를 모아 두는 작은 보관함입니다.',
-  timeline: '2025-03-14 | 첫 고백 | 별똥별이 쏟아지던 옥상에서.\n2025-05-02 | 첫 여행 | 길치 서하가 처음으로 지도를 하윤에게 맡긴 날.\n2025-09-20 | 같이 살기 시작 | 천문대 숙소를 나와 작은 집으로.\n2026-03-14 | 1주년 | 처음 만난 옥상에서 다시 별을 봤어요.',
-  qa: '좋아하는 계절 | 겨울 | 여름\n아침형 / 저녁형 | 새벽형 | 저녁형\n제일 좋아하는 음식 | 따뜻한 홍차 | 서하가 끓여 주는 죽\n서로의 첫인상 | 조용한 사람 | 자꾸 길을 잃는 사람',
+  quoteB: '치즈가 낮잠 자는 곳이 우리 집이야.',
+  story: '같은 골목에서 자란 두 고양이는 비 오던 밤 처음으로 한 상자 안에서 함께 잠들었어요. 이 페이지는 그날부터 지금까지의 이야기를 모아 두는 작은 보관함입니다.',
+  timeline: '2025-03-14 | 첫 낮잠 | 비를 피해 들어간 택배 상자에서.\n2025-05-02 | 첫 산책 | 겁 많은 고등어가 처음으로 담벼락 위를 함께 걸은 날.\n2025-09-20 | 같이 살기 시작 | 골목을 나와 햇볕 잘 드는 집사네 창가로.\n2026-03-14 | 1주년 | 처음 만난 상자 앞에서 참치캔을 나눠 먹었어요.',
+  qa: '좋아하는 계절 | 봄 (햇볕!) | 가을 (낙엽 사냥)\n아침형 / 저녁형 | 아침형 | 저녁형\n제일 좋아하는 간식 | 참치 츄르 | 닭가슴살 육포\n서로의 첫인상 | 겁 없는 노란 털뭉치 | 눈치 빠른 줄무늬',
   gallery: [],
   owner: '제작자 닉네임',
   notice: '두 캐릭터는 제작자의 오리지널 캐릭터(자캐)입니다. 무단 도용과 AI 학습 사용을 금지합니다.',
@@ -43,7 +44,7 @@ const defaults = {
 
 const fields = [
   { group: '커플 정보', open: true, items: [
-    { key: 'title', label: '커플 이름', type: 'text', hint: '예: 서하 × 하윤' },
+    { key: 'title', label: '커플 이름', type: 'text', hint: '예: 치즈 × 고등어' },
     { key: 'subtitle', label: '한 줄 소개', type: 'text' },
     { key: 'date', label: '기념일 기준일', type: 'date', hint: '이 날이 D+1일이에요. 100일 단위와 주년 기념일이 자동으로 계산돼요. 비우면 카운터를 숨겨요.' },
     { key: 'dateLabel', label: '카운터 문구', type: 'text' },

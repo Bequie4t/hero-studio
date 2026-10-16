@@ -33,15 +33,16 @@ export const galleryHtml = (arr, label, title = '갤러리') => {
   const g = imgs(arr, 8)
   return g.length ? `<section class="sec" id="gallery"><h2>${esc(title)}</h2><div class="gal">${g.map((s, i) => `<figure><img src="${s}" alt="${esc(label)} ${i + 1}" loading="lazy" decoding="async"></figure>`).join('')}</div></section>` : ''
 }
-/** A stand-in portrait when no illustration was uploaded: a tinted character silhouette whose hair varies with the name. */
-const HAIR = [
-  'M27 50C24 20 76 20 73 50C73 62 70 70 66 74L66 52L34 52L34 74C30 70 27 62 27 50Z',
-  'M30 46C30 24 70 24 70 46C70 52 69 56 67 58L33 58C31 56 30 52 30 46Z',
-  'M25 52C20 18 80 18 75 52C75 70 80 80 84 86C70 84 68 70 66 56L34 56C32 70 30 84 16 86C20 80 25 70 25 52Z',
-]
+/** A stand-in portrait when no illustration was uploaded: a tinted cat whose fur and markings vary with the name. */
 export const phHtml = (name) => {
   const h = [...String(name || '?')].reduce((a, ch) => (a * 31 + ch.codePointAt(0)) >>> 0, 7)
-  return `<div class="ph" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice"><path class="hr" d="${HAIR[h % HAIR.length]}"/><path class="sh" d="M10 100C10 76 28 66 50 66C72 66 90 76 90 100Z"/><rect class="nk" x="44" y="54" width="12" height="16" rx="5"/><ellipse class="fc" cx="50" cy="45" rx="14" ry="16"/><path class="hr" d="M35 42C36 28 64 28 65 42C58 37 48 36 35 42Z"/><circle class="ey" cx="44.5" cy="47" r="1.8"/><circle class="ey" cx="55.5" cy="47" r="1.8"/><path class="st" d="M82 16l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path class="st" d="M16 30l1.3 3 3 1.3-3 1.3-1.3 3-1.3-3-3-1.3 3-1.3z"/></svg></div>`
+  const fur = h % 3, mark = (h >> 3) % 3
+  const marks = [
+    '<path class="mk" d="M50 31v9M42 32l1.5 8M58 32l-1.5 8"/>',
+    '<ellipse class="pt" cx="62" cy="48" rx="9" ry="8"/>',
+    '<path class="mk" d="M50 31v9M41 33l3 7M59 33l-3 7"/><path class="mk" d="M24 56h7M24 62h6M76 56h-7M76 62h-6" opacity=".0"/>',
+  ][mark]
+  return `<div class="ph f${fur}" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice"><ellipse class="bd" cx="50" cy="102" rx="36" ry="24"/><path class="ft" d="M14 34L22 8L44 26Z"/><path class="ft" d="M86 34L78 8L56 26Z"/><path class="ei" d="M20 30L24 15L38 26Z"/><path class="ei" d="M80 30L76 15L62 26Z"/><ellipse class="ft" cx="50" cy="55" rx="34" ry="29"/>${marks}<ellipse class="ew" cx="39" cy="52" rx="6" ry="6.5"/><ellipse class="ew" cx="61" cy="52" rx="6" ry="6.5"/><ellipse class="ey" cx="39" cy="52" rx="2" ry="5.2"/><ellipse class="ey" cx="61" cy="52" rx="2" ry="5.2"/><path class="no" d="M46.5 61h7L50 65.5z"/><path class="ln" d="M50 65.5v3M50 68.5q-4 4.5-8.5 1.5M50 68.5q4 4.5 8.5 1.5"/><path class="ln wh" d="M30 63L11 58M30 67L11 69M70 63L89 58M70 67L89 69"/><path class="st" d="M84 14l1.8 4.6 4.6 1.8-4.6 1.8-1.8 4.6-1.8-4.6-4.6-1.8 4.6-1.8z"/></svg></div>`
 }
 export const noticeHtml = (c) => (c.notice ? `<section class="sec"><div class="notice">${multi(c.notice)}</div>${linksHtml(c.links)}</section>` : linksHtml(c.links) ? `<section class="sec">${linksHtml(c.links)}</section>` : '')
 export const footerHtml = (c, name) => `<footer>${c.owner ? `© ${esc(c.owner)} · ` : ''}${esc(name)}</footer>`
@@ -69,11 +70,18 @@ a{color:inherit}
 .ph{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 24% 18%,color-mix(in srgb,var(--accent2) 70%,#fff),transparent 62%),radial-gradient(circle at 82% 92%,color-mix(in srgb,var(--accent) 38%,transparent),transparent 58%),var(--accent2)}
 .ph::before{content:"";position:absolute;inset:0;background:radial-gradient(color-mix(in srgb,var(--fg) 14%,transparent) 1.4px,transparent 1.8px) 0 0/16px 16px;opacity:.7}
 .ph svg{position:absolute;inset:0;width:100%;height:100%}
-.ph .hr{fill:color-mix(in srgb,var(--accent) 70%,var(--fg))}
-.ph .sh{fill:color-mix(in srgb,var(--accent) 45%,var(--card))}
-.ph .nk,.ph .fc{fill:color-mix(in srgb,var(--card) 88%,var(--accent2))}
-.ph .nk{fill:color-mix(in srgb,var(--card) 70%,var(--accent2))}
-.ph .ey{fill:var(--fg)}
+.ph{--fur:color-mix(in srgb,var(--accent) 62%,var(--card));--fd:color-mix(in srgb,var(--accent) 38%,var(--fg))}
+.ph.f1{--fur:color-mix(in srgb,var(--accent2) 75%,var(--card));--fd:color-mix(in srgb,var(--accent2) 40%,var(--fg))}
+.ph.f2{--fur:color-mix(in srgb,var(--fg) 72%,var(--card));--fd:color-mix(in srgb,var(--fg) 85%,var(--bg))}
+.ph .ft,.ph .bd{fill:var(--fur)}
+.ph .bd{fill:color-mix(in srgb,var(--fur) 88%,var(--fg))}
+.ph .ei{fill:color-mix(in srgb,var(--card) 55%,#f4a3a3)}
+.ph .mk,.ph .ln{fill:none;stroke:var(--fd);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ph .pt{fill:color-mix(in srgb,var(--card) 80%,var(--fur))}
+.ph .ew{fill:color-mix(in srgb,#ffe9a8 80%,var(--card))}
+.ph .ey{fill:#1a1a1f}
+.ph .no{fill:color-mix(in srgb,var(--card) 40%,#f08a96)}
+.ph .wh{stroke:color-mix(in srgb,var(--card) 80%,var(--fd));stroke-width:1.1}
 .ph .st{fill:color-mix(in srgb,var(--card) 85%,transparent)}
 .gal figure{cursor:zoom-in}
 dialog#lb{border:0;padding:0;background:transparent;max-width:min(96vw,1100px);max-height:96vh;overflow:visible}
@@ -131,7 +139,7 @@ ${fontHead(fontCss, '')}
 ${fxCss(c)}</style>
 </head>
 <body${c.skin === 'line' ? ' class="sk-line"' : ''}>
-${fxHtml(c)}${body}
+${fxHtml(c, title)}${body}
 ${hasGal ? '<dialog id="lb" aria-label="이미지 크게 보기"><img alt=""><button type="button">닫기</button></dialog>' : ''}
 ${cfg ? `<script type="application/json" id="cfg">${cfg}</script>` : ''}${js ? `<script>${js}</script>` : ''}
 </body>

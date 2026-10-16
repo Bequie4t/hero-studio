@@ -1,29 +1,30 @@
 import { cols, esc, imgSrc, initial, jsonForScript, lines, list, multi, safeUrl } from './util.js'
 import { footerGroup, footerHtml, fontsOf, noticeHtml, paletteColors, shell, styleGroup, whenKo } from './kobase.js'
-import { fxDefaults, fxGroup, fxOf } from './fx.js'
+import { MOODS, fxDefaults, fxGroup, fxGroupSoft, fxOf } from './fx.js'
 
 // Template: 합작·이벤트 모집 — recruiting page with a deadline countdown, schedule, roles, rules and a participant list.
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'soda', label: '여름 소다', bg: '#e9f8ff', card: '#ffffff', fg: '#10303d', accent: '#13a3d6', accent2: '#ffe27a' },
   { id: 'maple', label: '가을 단풍', bg: '#fff1e4', card: '#fffaf3', fg: '#3a1d10', accent: '#d9531e', accent2: '#f3c777' },
   { id: 'winter', label: '겨울 밤', bg: '#0e1429', card: '#18203d', fg: '#e8edff', accent: '#8fb5ff', accent2: '#3b4a85', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'spring', label: '봄 벚꽃', bg: '#fff3f6', card: '#ffffff', fg: '#3c1f2a', accent: '#f0608a', accent2: '#ffd3e0' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS]
 
 const defaults = {
-  name: '달무리 마을 가을 합작',
-  tagline: '우리 자캐들이 함께 보내는 가을 하루',
+  name: '달무리 골목 가을 합작',
+  tagline: '우리 고양이 자캐들이 함께 보내는 가을 낮잠',
   open: true,
   banner: '',
-  intro: '달무리 마을 자캐들의 가을 하루를 모아 만드는 합작이에요.\n그림, 글, 굿즈 디자인 등 자유롭게 참여할 수 있어요. 한 분이 여러 캐릭터로 참여해도 괜찮아요.',
+  intro: '달무리 골목 고양이들의 가을을 모아 만드는 합작이에요.\n그림, 글, 굿즈 디자인 등 자유롭게 참여할 수 있어요. 한 분이 여러 고양이로 참여해도 괜찮아요.',
   deadline: '2026-12-20T23:59',
   roles: '일러스트/글(단편)/만화/굿즈 디자인/BGM',
-  conditions: '오리지널 캐릭터(자캐)로만 참여할 수 있어요.\n주제는 "가을 하루"예요. 분위기는 자유예요.\n마감일까지 완성본을 제출할 수 있는 분만 신청해 주세요.\n타인을 불쾌하게 하는 표현은 제외돼요.',
+  conditions: '오리지널 캐릭터(자캐) 고양이로만 참여할 수 있어요.\n주제는 "가을 낮잠"이에요. 분위기는 자유예요.\n마감일까지 완성본을 제출할 수 있는 분만 신청해 주세요.\n타인을 불쾌하게 하는 표현은 제외돼요.',
   steps: '신청 폼에서 닉네임과 참여 분야를 적어요.\n확정 안내를 받으면 디스코드 합작 채널에 입장해요.\n러프나 초안을 공유하고 서로 응원해요.\n마감일까지 완성본을 제출해요.\n공개일에 함께 합작집을 공개해요.',
   schedule: '2026-11-01 | 참가 신청 시작\n2026-11-20 | 참가 확정 안내\n2026-12-10 | 러프·초안 공유\n2026-12-20 | 완성본 마감\n2027-01-05 | 합작집 공개',
   perks: '합작집 공개 페이지에 이름과 작품이 실려요.\n참여자 전원에게 합작 기념 배경화면을 드려요.\n참여 인증 배지를 프로필에 쓸 수 있어요.',
   goal: '8',
-  people: '별조각 | 일러스트\n하늘 | 글\n민트 | 만화\n오렌지 | 굿즈 디자인',
+  people: '치즈 | 일러스트\n고등어 | 글\n두부 | 만화\n먹물 | 굿즈 디자인',
   applyLabel: '참가 신청하기',
   applyUrl: 'https://forms.gle/',
   faq: '여러 분야로 참여해도 되나요? | 네, 신청서에 적어 주세요.\n마감을 못 지키면 어떻게 되나요? | 미리 알려 주시면 일정을 조율해 볼게요.\n미성년자도 참여할 수 있나요? | 가능해요. 다만 합작 채널 규칙을 꼭 읽어 주세요.',

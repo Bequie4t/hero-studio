@@ -1,31 +1,32 @@
 import { cols, esc, hex, imgSrc, lines, list, multi, safeUrl } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, linksHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
-import { fxDefaults, fxGroup, fxOf } from './fx.js'
+import { MOODS, fxDefaults, fxGroup, fxGroupSoft, fxOf } from './fx.js'
 
 // Template: 자캐 설정집 — a character reference sheet: portrait card, colour swatches (click to copy),
 // profile table, stat bars, quote, relations and a gallery.
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'sakura', label: '벚꽃 크림', bg: '#fff5f6', card: '#ffffff', fg: '#3b2a30', accent: '#e8648b', accent2: '#f7c6d3' },
   { id: 'dawn', label: '새벽 라벤더', bg: '#1b1830', card: '#26223f', fg: '#ece8ff', accent: '#a78bfa', accent2: '#4a3f8f', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'mint', label: '민트 소다', bg: '#effaf6', card: '#ffffff', fg: '#1f3a34', accent: '#2fb89a', accent2: '#bfeede' },
   { id: 'gothic', label: '고딕 블랙레드', bg: '#0e0b0c', card: '#1a1315', fg: '#f2e9e9', accent: '#d6354f', accent2: '#5b1823', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'film', label: '달빛 필름', bg: '#0c0d10', card: '#16181d', fg: '#eceae4', accent: '#d8c7a0', accent2: '#3a3a40', fxGrain: true, fxVignette: true, fxStars: true, skin: 'line' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS]
 
 const defaults = {
-  name: '이서하',
-  nameSub: 'Lee Seoha · 李曙河',
-  tagline: '새벽빛을 닮은 별지기',
-  quote: '별은 길을 알려 주지 않아. 대신 길을 잃어도 괜찮다고 말해 줘.',
+  name: '치즈',
+  nameSub: 'Cheese · 치즈냥 (치즈태비 수컷)',
+  tagline: '골목에서 제일 느긋한 햇볕 수집가',
+  quote: '햇볕이 드는 곳이 내가 있는 곳이야. 그러니까 비켜 줄래?',
   portrait: '',
-  keywords: '별지기, 새벽, 다정함, 길치, 홍차',
-  story: '새벽 천문대에서 별의 움직임을 기록하는 관측 기사입니다. 말수가 적고 조용하지만, 한번 마음을 연 상대에게는 끝까지 다정한 사람이에요.\n\n길을 자주 잃어버리는 탓에 천문대 주변 지도는 전부 손으로 다시 그려 두었습니다.',
-  info: '나이 | 24세 (외견)\n키 / 체중 | 178cm / 64kg\n생일 | 11월 3일\n종족 | 별지기 (인간형)\nMBTI | INFJ\n소속 | 새벽 천문대\n역할 | 관측 기사',
-  swatches: '머리색 | #2f3a5f\n눈동자 | #7aa7ff\n포인트 | #ffd479\n의상 | #1f2a44',
-  stats: '관측력 | 9\n다정함 | 10\n체력 | 4\n요리 | 3\n길눈 | 1',
-  likes: '새벽 공기, 홍차, 낡은 지도, 별자리 도감',
-  dislikes: '소란스러운 곳, 정리 안 된 책상, 일찍 오는 비',
-  relations: '정하윤 | 소꿉친구 | 천문대의 유일한 동료. 서로의 말버릇까지 알고 있어요.\n윤도겸 | 스승 | 관측법을 가르쳐 준 은퇴한 기사.',
+  keywords: '치즈태비, 낮잠, 햇볕, 간식, 애교',
+  story: '달무리 골목의 담벼락 위가 제일 좋은 자리라고 믿는 치즈태비예요. 느긋하고 겁이 없어서 처음 보는 사람 무릎에도 거리낌 없이 올라가요.\n\n간식 봉지 소리가 들리면 어디에 있든 5초 안에 나타나요. 다만 사냥 실력은… 비밀로 해 주세요.',
+  info: '나이 | 3살 (사람 나이로 28세)\n몸길이 / 체중 | 46cm / 4.6kg\n생일 | 3월 3일\n종 | 고양이 (치즈태비)\n성격 | 느긋함 · 넉살 좋음\n소속 | 달무리 골목\n역할 | 담벼락 순찰대장 (자칭)',
+  swatches: '털색 | #f2a65a\n눈동자 | #7bc96f\n코·발바닥 | #f4a3a3\n목줄 | #5b7db1',
+  stats: '낮잠 | 10\n애교 | 9\n간식 레이더 | 8\n점프 | 4\n사냥 | 1',
+  likes: '햇볕, 참치캔, 택배 상자, 창가 자리',
+  dislikes: '목욕, 청소기, 닫힌 문, 비 오는 날',
+  relations: '고등어 | 소꿉친구 | 같은 골목에서 자란 순찰 동료. 서로의 낮잠 자리를 잘 알아요.\n먹물 | 골목 어르신 | 사냥하는 법을 가르쳐 줬지만 치즈는 하나도 기억하지 못했어요.',
   gallery: [],
   owner: '제작자 닉네임',
   notice: '이 캐릭터는 제작자의 오리지널 캐릭터(자캐)입니다. 2차 가공, 무단 도용, AI 학습 사용을 금지합니다. 교류와 커미션 문의는 환영해요.',

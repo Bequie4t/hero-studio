@@ -28,7 +28,9 @@ export function toReactProject(html, { name = 'site' } = {}) {
   const icon = (html.match(/<link rel="icon" href="([^"]+)"/) || [])[1]
   const fontsCss = (html.match(/<style id="fonts">([\s\S]*?)<\/style>/) || [])[1]
   const css = pull(html, /<style>([\s\S]*?)<\/style>/, 'styles')[1].trim()
-  const body = pull(html, /<body>([\s\S]*)<\/body>/, 'body')[1]
+  const bodyM = pull(html, /<body([^>]*)>([\s\S]*)<\/body>/, 'body')
+  const bodyClass = (bodyM[1].match(/class="([^"]*)"/) || [])[1] || ''
+  const body = bodyM[2]
   const cfgJson = (body.match(/<script type="application\/json" id="cfg">([\s\S]*?)<\/script>/) || [])[1]
   const runtime = (body.match(/<script>([\s\S]*?)<\/script>/) || [])[1]
   const markup = body.replace(/<script[\s\S]*?<\/script>/g, '').trim()
@@ -39,7 +41,8 @@ export function toReactProject(html, { name = 'site' } = {}) {
     images.push({ ext: ext === 'jpeg' ? 'jpg' : ext, b64 })
     return `src="__IMG${images.length - 1}__"`
   })
-  const jsx = toJsx(withoutImages).replace(/src="__IMG(\d+)__"/g, 'src={img$1}')
+  let jsx = toJsx(withoutImages).replace(/src="__IMG(\d+)__"/g, 'src={img$1}')
+  if (bodyClass) jsx = `<div className="${bodyClass}">\n${jsx}\n</div>`
   const imgImports = images.map((im, i) => `import img${i} from './assets/img${i}.${im.ext}'\n`).join('')
 
   let component
@@ -49,7 +52,8 @@ export function toReactProject(html, { name = 'site' } = {}) {
       .replace(/setTimeout\(/g, 'later(')
       .replace(/setInterval\(/g, 'every(')
       .replace(/requestAnimationFrame\(/g, 'frame(')
-      .replace(/window\.addEventListener\(/g, 'listen(')
+      .replace(/([A-Za-z_$][\w$]*(?:\.[\w$]+|\([^()]*\))*)\.addEventListener\(/g, 'on($1, ')
+      .replace(/(^|[^\w$.])addEventListener\(/g, '$1on(window, ')
       .trim()
       .split('\n')
       .map((l) => (l ? '    ' + l : l))
@@ -68,7 +72,7 @@ export default function Hero() {
     const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.add(id); return id }
     const every = (fn, ms) => { const id = setInterval(fn, ms); timers.add(id); return id }
     const frame = (fn) => { raf = requestAnimationFrame(fn); return raf }
-    const listen = (type, fn) => { window.addEventListener(type, fn); cleanups.push(() => window.removeEventListener(type, fn)) }
+    const on = (target, type, fn, opts) => { target.addEventListener(type, fn, opts); cleanups.push(() => target.removeEventListener(type, fn, opts)) }
 
 ${effect}
 

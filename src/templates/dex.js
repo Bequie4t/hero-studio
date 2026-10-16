@@ -1,19 +1,20 @@
 import { cols, esc, hex, imgSrc, lines, multi } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
-import { fxDefaults, fxGroup, fxOf } from './fx.js'
+import { MOODS, fxDefaults, fxGroup, fxGroupSoft, fxOf } from './fx.js'
 
 // Template: 캐릭터 도감 — many characters in one place, grouped by faction (lines starting with "# ").
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'cream', label: '도감 크림', bg: '#f6efe3', card: '#fffaf1', fg: '#33281c', accent: '#b4532a', accent2: '#e9c46a' },
   { id: 'deep', label: '심해 청록', bg: '#0b1c22', card: '#12303a', fg: '#e3f4f4', accent: '#4fd1c5', accent2: '#2b6f7a', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'sunset', label: '석양', bg: '#fff1ea', card: '#ffffff', fg: '#3b1f1a', accent: '#ff7a59', accent2: '#ffd1bf' },
   { id: 'obsidian', label: '흑요석', bg: '#101014', card: '#1b1b22', fg: '#eeeaf4', accent: '#c9a3ff', accent2: '#47346b', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS]
 
 const defaults = {
-  title: '달무리 마을 주민 도감',
-  subtitle: '마을에 사는 사람들을 한곳에 모아 두었어요.',
-  chars: '# 새벽 천문대\n이서하 | 새벽빛을 닮은 별지기 | 별지기/다정함/길치 | 천문대에서 별의 움직임을 기록하는 관측 기사. 말수가 적지만 한번 마음을 연 사람에게는 끝까지 다정해요. | #e5566d\n정하윤 | 천문대의 정비사 | 정비사/수다쟁이/손재주 | 망원경과 시계를 고치는 솜씨 좋은 정비사. 서하의 길치를 가장 잘 아는 사람이에요. | #4a8df0\n# 마을 광장\n미소 | 광장 모퉁이 빵집 주인 | 빵집/아침형/요리 | 새벽 네 시에 일어나 마을의 첫 빵을 굽는 사람. | #e9a23b\n도겸 | 은퇴한 관측 기사 | 은퇴/스승/낚시 | 서하에게 관측법을 가르쳐 준 노기사. 요즘은 호숫가에서 낚시를 해요. | #2a9d8f',
+  title: '달무리 골목 고양이 도감',
+  subtitle: '골목에 사는 고양이들을 한곳에 모아 두었어요.',
+  chars: '# 담벼락 패거리\n치즈 | 햇볕 수집가 치즈태비 | 낮잠/애교/간식 | 담벼락 위 제일 좋은 자리를 차지한 느긋한 치즈태비. 간식 봉지 소리가 들리면 5초 안에 나타나요. | #f2a65a\n고등어 | 눈치 빠른 골목 정보통 | 정보통/겁쟁이/줄무늬 | 골목의 소문은 전부 알고 있는 고등어태비. 큰 소리에는 약하지만 치즈 옆에서는 용감해져요. | #5b7db1\n# 창가 모임\n두부 | 하얀 솜뭉치 막내 | 막내/호기심/점프 | 올봄에 골목에 온 하얀 아기 고양이. 뭐든 발로 한 번씩 건드려 봐야 직성이 풀려요. | #e8a0b4\n먹물 | 골목의 어르신 | 어르신/검은고양이/사냥 | 달무리 골목에서 가장 오래 산 검은 고양이. 조용히 지켜보다 한마디씩 던져요. | #6b5b95',
   portraits: [],
   owner: '제작자 닉네임',
   notice: '이 도감의 캐릭터는 모두 제작자의 오리지널 캐릭터(자캐)입니다. 무단 도용과 AI 학습 사용을 금지합니다.',
@@ -161,7 +162,7 @@ dialog.pf::backdrop{background:rgba(10,8,18,.72)}
 `
   const body = `<div class="page">
   <header><p class="eyebrow">CHARACTER DEX</p><h1>${esc(c.title)}</h1>${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ''}<div class="stats"><div><b>${total}</b><span>등록</span></div>${named ? `<div><b>${named}</b><span>소속</span></div>` : ''}<div><b>${allKw.length}</b><span>키워드</span></div></div></header>
-  ${total > 4 ? `<div class="tools"><input id="q" type="search" placeholder="이름·키워드로 찾기" aria-label="캐릭터 검색"><button type="button" class="kw" data-kw="">전체</button>${allKw.slice(0, 8).map((k) => `<button type="button" class="kw" data-kw="${esc(k.toLowerCase())}">${esc(k)}</button>`).join('')}</div>` : ''}
+  ${total > 2 ? `<div class="tools"><input id="q" type="search" placeholder="이름·키워드로 찾기" aria-label="캐릭터 검색"><button type="button" class="kw" data-kw="">전체</button>${allKw.slice(0, 8).map((k) => `<button type="button" class="kw" data-kw="${esc(k.toLowerCase())}">${esc(k)}</button>`).join('')}</div>` : ''}
   ${groups.map((g) => `<section class="sec grp" data-grp>${g.name ? `<h2>${esc(g.name)} <small>${g.items.length}명</small></h2>` : ''}<div class="dex">${g.items.map(card).join('')}</div></section>`).join('')}
   <p class="none" id="none" hidden>찾는 캐릭터가 없어요.</p>
   ${noticeHtml(c)}

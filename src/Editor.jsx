@@ -126,6 +126,8 @@ export default function Editor({ template, shared }) {
     const { id, label, ...vals } = p
     const fxOff = Object.fromEntries(['fxStars', 'fxGrain', 'fxVignette', 'fxCursor'].filter((k) => k in c).map((k) => [k, false]))
     if ('skin' in c) fxOff.skin = 'soft'
+    if ('fxFall' in c) fxOff.fxFall = 'none'
+    if ('fxCursorKind' in c) fxOff.fxCursorKind = 'star'
     return { ...c, ...fxOff, ...vals }
   })
 

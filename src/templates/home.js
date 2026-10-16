@@ -1,32 +1,33 @@
 import { koOptions } from '../fonts/ko-registry.js'
 import { cols, esc, imgSrc, imgs, jsonForScript, lines, multi, safeUrl, ymd } from './util.js'
 import { fontsOf, galleryHtml, phHtml, shell } from './kobase.js'
-import { fxDefaults, fxGroup, fxOf } from './fx.js'
+import { MOODS, fxDefaults, fxGroup, fxGroupSoft, fxOf } from './fx.js'
 
 // Template: 덕질 홈 — a retro "window" personal homepage (profile, links, favourites, notes).
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'candy', label: '캔디 팝', bg: '#ffe4f1', card: '#ffffff', fg: '#3a1b2e', accent: '#ff5ca8', accent2: '#7fd6ff' },
   { id: 'y2k', label: '사이버 Y2K', bg: '#0c1030', card: '#161b4a', fg: '#e8f0ff', accent: '#39ffd0', accent2: '#ff4fd8', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'lemon', label: '레몬 소다', bg: '#fff9d6', card: '#ffffff', fg: '#3a2f08', accent: '#ffb300', accent2: '#6fd3a8' },
   { id: 'ink', label: '먹물', bg: '#f1efe9', card: '#ffffff', fg: '#16151a', accent: '#16151a', accent2: '#e24a3b' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS.map((m) => ({ ...m, skin: 'soft' }))]
 
 const defaults = {
-  nick: '별조각',
-  bio: '자캐와 이야기 만드는 걸 좋아하는 덕후',
+  nick: '꼬리별',
+  bio: '고양이 자캐와 이야기 만드는 걸 좋아하는 덕후',
   avatar: '',
-  status: '새 자캐 설정 정리 중',
-  tags: '자캐/글/그림/별',
-  oshi: '이서하',
-  oshiNote: '내 첫 번째 아이. 새벽 천문대의 별지기예요.',
+  status: '치즈의 새 설정 정리 중',
+  tags: '자캐/고양이/그림/낮잠',
+  oshi: '치즈',
+  oshiNote: '내 첫 번째 고양이 자캐. 담벼락 위 햇볕을 사랑하는 치즈태비예요.',
   oshiImage: '',
-  ddayLabel: '자캐 생일까지',
-  dday: '2027-01-01',
+  ddayLabel: '치즈 생일까지',
+  dday: '2027-03-03',
   guestbook: '',
-  marquee: '새 글은 트위터에 올라와요 · 자캐 커미션은 11월부터 다시 받아요 · 편하게 말 걸어 주세요',
+  marquee: '새 글은 트위터에 올라와요 · 고양이 자캐 커미션은 11월부터 다시 받아요 · 편하게 말 걸어 주세요',
   links: '트위터(X) | https://twitter.com/\n포스타입 | https://www.postype.com/\n픽시브 | https://www.pixiv.net/\n디스코드 | https://discord.com/\n블로그 | https://www.tistory.com/',
-  favs: '자캐 | 이서하 | 내 첫 번째 아이, 새벽 천문대의 별지기\n소설 | 새벽의 도서관 | 읽을 때마다 다른 문장이 보여요\n게임 | 별빛 정원 | 힐링하고 싶을 때 켜는 게임\n음악 | 밤 산책 플레이리스트 | 작업할 때 무한 반복',
-  about: '안녕하세요! 오리지널 캐릭터(자캐)를 만들고 그리는 걸 좋아해요.\n이 페이지는 제가 좋아하는 것들을 모아 둔 작은 집이에요. 편하게 구경하고 가세요.',
+  favs: '자캐 | 치즈 | 내 첫 번째 아이, 달무리 골목의 치즈태비\n소설 | 고양이 탐정 노트 | 읽을 때마다 다른 단서가 보여요\n게임 | 고양이와 스프 | 힐링하고 싶을 때 켜는 게임\n음악 | 창가 낮잠 플레이리스트 | 작업할 때 무한 반복',
+  about: '안녕하세요! 고양이 오리지널 캐릭터(자캐)를 만들고 그리는 걸 좋아해요.\n이 페이지는 제가 좋아하는 것들을 모아 둔 작은 집이에요. 편하게 구경하고 가세요.',
   rules: '자캐 이미지 무단 도용, 트레이싱, AI 학습 사용은 금지예요.\n리트윗, 감상, 교류는 언제나 환영이에요.\n답장이 조금 늦을 수 있어요.',
   gallery: [],
   bg: PALETTES[0].bg,
@@ -83,7 +84,7 @@ const fields = [
     { key: 'dots', label: '배경 물방울 무늬', type: 'check' },
     { key: 'stickers', label: '반짝이 스티커 장식', type: 'check' },
   ] },
-  fxGroup,
+  fxGroupSoft,
 ]
 
 const RUNTIME = String.raw`

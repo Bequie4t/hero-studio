@@ -1,18 +1,19 @@
 import { cols, esc, imgSrc, lines, multi, safeUrl } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
-import { fxDefaults, fxGroup, fxOf } from './fx.js'
+import { MOODS, fxDefaults, fxGroup, fxGroupSoft, fxOf } from './fx.js'
 
 // Template: 커미션 안내 — status, price list, process, rules, copy-able request form, work board.
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'sky', label: '파스텔 하늘', bg: '#eef6ff', card: '#ffffff', fg: '#1c2b3f', accent: '#4a90e2', accent2: '#ffd9e8' },
   { id: 'kraft', label: '크래프트 종이', bg: '#f4ead8', card: '#fffaf0', fg: '#3a2c18', accent: '#a8652a', accent2: '#e8cf9b' },
   { id: 'ink', label: '밤 잉크', bg: '#12131a', card: '#1c1e29', fg: '#ecebf5', accent: '#7ee0c3', accent2: '#3a3f66', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'berry', label: '딸기우유', bg: '#fff0f3', card: '#ffffff', fg: '#3a1a24', accent: '#ff5c8a', accent2: '#ffd6e2' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS]
 
 const defaults = {
-  name: '별조각 공방',
-  bio: '자캐 일러스트와 설정화를 그리는 작가예요. 캐릭터의 분위기를 살리는 그림을 그려 드려요.',
+  name: '꼬리별 공방',
+  bio: '고양이 자캐 일러스트와 설정화를 그리는 작가예요. 털 한 올, 표정 하나까지 캐릭터의 분위기를 살려 드려요.',
   avatar: '',
   open: true,
   statusText: '11월 3주차까지 신청 받아요',
@@ -26,9 +27,9 @@ const defaults = {
   faq: '입금은 언제 하나요? | 작업 가능 여부를 안내드린 뒤에 입금해 주세요.\n수정은 몇 번까지 되나요? | 러프 단계에서 2회까지 무료예요.\n캐릭터가 여러 명이면요? | 캐릭터 추가 옵션이 붙어요.',
   applyLabel: '신청하러 가기',
   applyUrl: 'https://forms.gle/',
-  form: '[커미션 신청 양식]\n닉네임:\n연락 방법:\n신청 종류:\n캐릭터 이름/설정 요약:\n레퍼런스 링크:\n원하는 분위기·포즈:\n희망 완성일:',
-  board: '하늘님 | 작업중\n민트님 | 대기\n오렌지님 | 완료\n라일락님 | 완료',
-  owner: '별조각',
+  form: '[커미션 신청 양식]\n닉네임:\n연락 방법:\n신청 종류:\n캐릭터 이름/설정 요약 (털색, 눈색, 무늬):\n레퍼런스 링크:\n원하는 분위기·포즈:\n희망 완성일:',
+  board: '치즈님 | 작업중\n고등어님 | 대기\n두부님 | 완료\n먹물님 | 완료',
+  owner: '꼬리별',
   notice: '신청 전 안내를 끝까지 읽어 주세요. 안내를 읽지 않아 생긴 문제는 도와드리기 어려워요.',
   links: '트위터(X) | https://twitter.com/\n포스타입 | https://www.postype.com/\n픽시브 | https://www.pixiv.net/',
   ...paletteColors(PALETTES[0]),

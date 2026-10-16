@@ -1,21 +1,22 @@
 import { cols, esc, initial, lines, multi } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, shell, styleGroup } from './kobase.js'
-import { fxDefaults, fxGroup, fxOf } from './fx.js'
+import { MOODS, fxDefaults, fxGroup, fxGroupSoft, fxOf } from './fx.js'
 
 // Template: 세계관 연표 — era headers ("# "), timeline events with tags (filterable), factions and a glossary.
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'starlit', label: '별빛 남색', bg: '#0c1330', card: '#162049', fg: '#e8ecff', accent: '#ffd479', accent2: '#3a4a9a', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'parchment', label: '고서 양피지', bg: '#f1e7d0', card: '#faf3e0', fg: '#34281a', accent: '#8c4a1f', accent2: '#d9b36a' },
   { id: 'moss', label: '이끼 숲', bg: '#eaf2e4', card: '#f7fbf3', fg: '#1f3220', accent: '#3f7d4a', accent2: '#bfdca8' },
   { id: 'seal', label: '먹과 붉은 인장', bg: '#f3f0ea', card: '#ffffff', fg: '#17171b', accent: '#c0302f', accent2: '#e2d6c3' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS]
 
 const defaults = {
-  name: '달무리 세계 연표',
-  subtitle: '달이 두 개 뜨는 세계의 역사와 용어를 모아 두었어요.',
-  events: '# 개척기\n건국 0년 | 쌍달의 밤 | 하늘에 두 번째 달이 떠오르며 마을의 터가 정해졌다. | 사건\n건국 12년 | 천문대 설립 | 별의 움직임을 기록하는 첫 천문대가 세워졌다. | 기관\n# 안정기\n건국 80년 | 별지기 서약 | 별지기들이 마을을 지키겠다는 서약문을 남겼다. | 인물\n건국 143년 | 큰 가뭄 | 호수가 마르며 이주민이 크게 늘었다. | 사건\n# 현재\n건국 210년 | 새벽 천문대의 재개관 | 낡은 천문대가 정비사 하윤의 손으로 다시 문을 열었다. | 기관',
-  factions: '새벽 천문대 | 별의 움직임을 기록하는 관측 기관\n광장 상인회 | 마을 시장과 축제를 운영하는 모임\n호숫가 낚시꾼들 | 은퇴한 기사들이 모인 느슨한 모임',
-  glossary: '쌍달 | 마을 하늘에 동시에 뜨는 두 개의 달\n별지기 | 별의 움직임을 기록하고 마을에 전하는 사람\n달무리 | 달 주위에 생기는 빛의 고리. 마을에서는 좋은 징조로 여겨요.',
+  name: '달무리 골목 연대기',
+  subtitle: '달이 두 개 뜨는 골목, 고양이들이 지켜 온 이야기를 모아 두었어요.',
+  events: '# 골목의 시작\n골목력 0년 | 쌍달의 밤 | 하늘에 두 번째 달이 뜨던 밤, 길고양이들이 담벼락 아래 모여들었다. | 사건\n골목력 12년 | 첫 급식소 | 이름 모를 집사가 골목 끝에 밥그릇을 놓기 시작했다. | 장소\n# 번영기\n골목력 80년 | 담벼락 협정 | 고양이들이 담벼락 자리를 번갈아 쓰기로 약속했다. | 인물\n골목력 143년 | 긴 장마 | 비가 석 달 이어지자 상자 집이 가장 귀한 재산이 되었다. | 사건\n# 현재\n골목력 210년 | 창가 모임의 탄생 | 막내 두부가 창가에 모이자고 제안하며 새로운 모임이 시작됐다. | 장소',
+  factions: '담벼락 패거리 | 담벼락 위를 지키는 느긋한 순찰대\n창가 모임 | 집사네 창가에서 햇볕을 나누는 모임\n상자 조합 | 택배 상자를 공정하게 나누는 모임',
+  glossary: '쌍달 | 골목 하늘에 동시에 뜨는 두 개의 달\n순찰 | 담벼락 위를 천천히 걷는 일. 사실은 산책이에요.\n달무리 | 달 주위에 생기는 빛의 고리. 골목에서는 간식이 생기는 징조예요.',
   gallery: [],
   owner: '세계관 제작자',
   notice: '이 세계관과 설정은 제작자의 오리지널 창작물입니다. 허락 없는 2차 가공과 AI 학습 사용을 금지합니다.',
