@@ -5,6 +5,8 @@ export const KO_FONTS = {
   gowundodum: { family: 'Gowun Dodum', label: '고운돋움 (부드러운 돋움)', weights: [400], stack: "'Gowun Dodum',system-ui,sans-serif" },
   jua: { family: 'Jua', label: '주아 (동글동글 제목용)', weights: [400], stack: "'Jua',system-ui,sans-serif" },
   blackhan: { family: 'Black Han Sans', label: '블랙한산스 (굵은 제목용)', weights: [400], stack: "'Black Han Sans',system-ui,sans-serif" },
+  galmuri: { family: 'Galmuri11', label: '갈무리 (한글 픽셀체)', weights: [400, 700], stack: "'Galmuri11',system-ui,sans-serif" },
+  galmurimono: { family: 'Galmuri Mono', label: '갈무리 모노 (픽셀 고정폭)', weights: [400], stack: "'Galmuri Mono',ui-monospace,monospace" },
   nanumpen: { family: 'Nanum Pen Script', label: '나눔손글씨 펜 (손글씨)', weights: [400], stack: "'Nanum Pen Script',cursive" },
 }
 export const koStack = (id) => (KO_FONTS[id] || KO_FONTS.pretendard).stack

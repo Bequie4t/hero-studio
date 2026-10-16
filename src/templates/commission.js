@@ -60,7 +60,7 @@ const fields = [
     { key: 'board', label: '현황판', type: 'textarea', rows: 5, hint: '한 줄에 하나: 이름 | 상태(대기/작업중/완료) (최대 12개)' },
   ] },
   footerGroup,
-  styleGroup(['jua', 'blackhan', 'gowunbatang', 'nanumpen', 'pretendard']),
+  styleGroup(['jua', 'blackhan', 'gowunbatang', 'nanumpen', 'galmuri', 'pretendard']),
 ]
 
 const RUNTIME = String.raw`

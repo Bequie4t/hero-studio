@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { TEMPLATES, getTemplate } from './templates/index.js'
-import SiteNav from './SiteNav.jsx'
+import { TEMPLATES } from './templates/index.js'
+import Hero from './Hero.jsx'
 import Thumb from './Thumb.jsx'
 
 const STEPS = [
@@ -38,27 +38,12 @@ export default function Landing() {
     addEventListener('hashchange', go)
     return () => removeEventListener('hashchange', go)
   }, [])
-  const stack = ['oc', 'couple', 'home'].map(getTemplate).filter(Boolean)
   const fan = TEMPLATES.filter((t) => t.group === '덕질')
   const more = TEMPLATES.length - fan.length
 
   return (
     <div className="landing">
-      <SiteNav />
-      <section className="l-hero">
-        <div className="l-copy">
-          <p className="l-eyebrow">무료 · 가입 없음 · 파일 하나로 끝</p>
-          <h1>내 자캐를 위한 작은 집, 5분이면 지어요.</h1>
-          <p className="l-sub">자캐 설정집부터 커플 아카이브, 커뮤니티, 합작 모집, 커미션 안내, 덕질 홈페이지까지. 템플릿을 고르고 글과 그림만 바꾸면, 무료로 공개할 수 있는 웹페이지가 만들어져요.</p>
-          <div className="l-cta">
-            <a className="btn-solid" href="#/templates">템플릿 고르기</a>
-            <a className="btn-line" href="#/#how">어떻게 쓰나요?</a>
-          </div>
-        </div>
-        <div className="l-stack" aria-hidden="true">
-          {stack.map((t, i) => (<div key={t.id} className={`l-card c${i}`}><Thumb template={t} /></div>))}
-        </div>
-      </section>
+      <Hero />
 
       <section className="l-strip" aria-label="특징">
         <span>가입 없이 바로</span><span>한글 폰트 내장</span><span>그림은 내 브라우저에서만</span><span>무료로 공개</span>

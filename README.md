@@ -11,7 +11,7 @@
 
 ## 화면 구조
 
-- `#/` 랜딩페이지, `#/templates` 템플릿 목록, `#/t/<id>` 편집기, `#c=...` 공유 링크
+- `#/` 랜딩페이지(히어로 섹션 중심: 큰 픽셀 제목, 말풍선이 있는 픽셀 고양이 마스코트 `src/mascot/`), `#/templates` 템플릿 목록, `#/t/<id>` 편집기, `#c=...` 공유 링크
 - 편집기의 **무료로 공개하기** 버튼이 배포용 zip(`index.html`)과 Netlify Drop, Cloudflare Pages, GitHub Pages 업로드 방법을 안내합니다.
 
 ## 템플릿
@@ -29,7 +29,7 @@
 ## 폰트
 
 - 라틴 폰트: `src/fonts/registry.js`, `node scripts/fonts.mjs`로 `@fontsource`에서 복사.
-- 한글 폰트: `src/fonts/ko-registry.js`. `node scripts/ko-fonts.mjs`가 원본 폰트를 자주 쓰는 한글 2,350자 + 라틴 + 기호로 줄여 `public/fonts/ko/*.woff`에 만들어요.
+- 한글 폰트: `src/fonts/ko-registry.js` (갈무리 한글 픽셀체 포함, OFL). `node scripts/ko-fonts.mjs`가 원본 폰트를 자주 쓰는 한글 2,350자 + 라틴 + 기호로 줄여 `public/fonts/ko/*.woff`에 만들어요.
 - 편집기는 페이지에 **실제로 쓰인 글자와 굵기만** 남기도록 브라우저에서 한 번 더 줄이고(`src/fonts/subset.js`, harfbuzz WASM) data URI로 파일에 넣어요. 그래서 다운로드한 페이지는 외부 폰트 서버를 쓰지 않고, 폰트 용량도 작아요.
 
 ## 이미지

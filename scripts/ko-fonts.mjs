@@ -13,6 +13,8 @@ const SOURCES = {
   jua: { 400: G + 'jua/400Regular/Jua_400Regular.ttf' },
   blackhan: { 400: G + 'black-han-sans/400Regular/BlackHanSans_400Regular.ttf' },
   nanumpen: { 400: G + 'nanum-pen-script/400Regular/NanumPenScript_400Regular.ttf' },
+  galmuri: { 400: 'node_modules/galmuri/dist/Galmuri11.woff2', 700: 'node_modules/galmuri/dist/Galmuri11-Bold.woff2' },
+  galmurimono: { 400: 'node_modules/galmuri/dist/GalmuriMono11.woff2' },
 }
 
 function ksx1001Hangul() {

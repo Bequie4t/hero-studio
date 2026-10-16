@@ -55,8 +55,8 @@ const fields = [
     { type: 'palette' },
     { type: 'colors', keys: [['bg', '배경'], ['card', '창 배경'], ['fg', '글자']] },
     { type: 'colors', keys: [['accent', '포인트'], ['accent2', '보조 포인트']] },
-    { key: 'displayFont', label: '제목 폰트', type: 'select', options: koOptions(['jua', 'blackhan', 'nanumpen', 'gowunbatang', 'pretendard']) },
-    { key: 'bodyFont', label: '본문 폰트', type: 'select', options: koOptions(['pretendard', 'gowundodum', 'gowunbatang']) },
+    { key: 'displayFont', label: '제목 폰트', type: 'select', options: koOptions(['jua', 'blackhan', 'nanumpen', 'galmuri', 'gowunbatang', 'pretendard']) },
+    { key: 'bodyFont', label: '본문 폰트', type: 'select', options: koOptions(['pretendard', 'gowundodum', 'gowunbatang', 'galmurimono']) },
     { key: 'dots', label: '배경 물방울 무늬', type: 'check' },
   ] },
 ]

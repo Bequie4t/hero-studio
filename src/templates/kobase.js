@@ -4,7 +4,7 @@ import { cols, esc, fontHead, hex, imgs, multi, safeUrl } from './util.js'
 // Shared pieces for the Korean fan templates: colours, fonts, footer, links, gallery, notice.
 export const paletteColors = (p) => ({ bg: p.bg, card: p.card, fg: p.fg, accent: p.accent, accent2: p.accent2 })
 
-export const styleGroup = (display = ['gowunbatang', 'jua', 'blackhan', 'nanumpen', 'pretendard'], body = ['pretendard', 'gowundodum', 'gowunbatang']) => ({
+export const styleGroup = (display = ['gowunbatang', 'jua', 'blackhan', 'nanumpen', 'galmuri', 'pretendard'], body = ['pretendard', 'gowundodum', 'gowunbatang', 'galmurimono']) => ({
   group: '스타일',
   items: [
     { type: 'palette' },
