@@ -14,7 +14,9 @@ const defaults = {
   bio: '자캐 일러스트와 설정화를 그리는 작가예요. 캐릭터의 분위기를 살리는 그림을 그려 드려요.',
   avatar: '',
   open: true,
-  statusText: '11월 3주차까지 신청 받아요 (최대 5슬롯)',
+  statusText: '11월 3주차까지 신청 받아요',
+  slotsTotal: '5',
+  slotsLeft: '3',
   samples: [],
   prices: '반신 일러스트 | 30,000원 | 채색 포함, 배경은 단색 | 약 2주\n전신 일러스트 | 50,000원 | 채색 포함, 간단한 배경 | 약 3주\n캐릭터 설정화 | 70,000원 | 전신 + 표정 3종 + 설정 메모 | 약 4주\n커플 일러스트 | 80,000원 | 반신 2인 기준, 배경 포함 | 약 3주',
   options: '캐릭터 추가 | +50%\n복잡한 배경 | +10,000원\n상업적 이용 | 별도 문의\n급행 작업 | +30%',
@@ -41,7 +43,9 @@ const fields = [
   ] },
   { group: '신청 상태', open: true, items: [
     { key: 'open', label: '지금 커미션을 받고 있어요', type: 'check' },
-    { key: 'statusText', label: '상태 설명', type: 'text', hint: '예: 11월 3주차까지 신청 받아요 (최대 5슬롯)' },
+    { key: 'statusText', label: '상태 설명', type: 'text', hint: '예: 11월 3주차까지 신청 받아요' },
+    { key: 'slotsTotal', label: '전체 슬롯', type: 'text', half: true, hint: '숫자만. 비우면 슬롯 표시를 숨겨요.' },
+    { key: 'slotsLeft', label: '남은 슬롯', type: 'text', half: true },
     { key: 'samples', label: '샘플 그림', type: 'images', max: 8, hint: '작업 예시를 최대 8장까지 보여 줘요.' },
   ] },
   { group: '가격표', open: true, items: [
@@ -122,17 +126,31 @@ function build(input, { fontCss } = {}) {
   const board = lines(c.board, 12).map(cols)
   const faq = lines(c.faq, 8).map(cols)
   const est = prices.length > 0 && prices.some(([, p]) => num(p))
+  const slotsTotal = Math.max(0, Math.min(12, parseInt(c.slotsTotal, 10) || 0))
+  const slotsLeft = Math.max(0, Math.min(slotsTotal, parseInt(c.slotsLeft, 10) || 0))
+  const fan = (Array.isArray(c.samples) ? c.samples : []).map(imgSrc).filter(Boolean).slice(0, 3)
   const stCls = (s) => (/완료/.test(s) ? 'done' : /작업|진행/.test(s) ? 'wip' : 'wait')
   const css = `
-.top{display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,3vw,32px);align-items:center}
-.av{width:clamp(96px,16vw,150px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--accent2);position:relative;border:4px solid var(--card);outline:2px solid var(--accent)}
-.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.top h1{margin:0;font:400 clamp(34px,6vw,64px)/1.1 var(--display)}
-.top p{margin:6px 0 0;color:var(--dim);max-width:52ch}
-.state{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:clamp(20px,3vw,32px);padding:14px 22px;border-radius:20px;background:var(--card);border:2px solid var(--accent)}
-.state b{display:inline-flex;align-items:center;gap:8px;padding:3px 16px;border-radius:99px;background:var(--accent);color:var(--bg);font-weight:800}
-.state.closed{border-color:var(--line)}.state.closed b{background:var(--dim)}
-.state b::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--bg)}
+.top{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(20px,4vw,56px);align-items:center;padding:clamp(8px,2vw,24px) 0}
+.eyebrow{display:inline-block;margin:0 0 10px;padding:4px 14px;border-radius:99px;background:var(--fg);color:var(--bg);font:800 12px/1.4 var(--body);letter-spacing:.22em}
+.top h1{margin:0;font:400 clamp(44px,7.5vw,92px)/1.02 var(--display);letter-spacing:-.02em}
+.bio{margin:14px 0 0;color:var(--dim);max-width:46ch;font-size:clamp(15px,1.6vw,18px)}
+.state{display:flex;align-items:center;gap:16px;margin-top:22px;padding:14px 20px;border-radius:22px;background:var(--card);border:2px solid var(--accent);box-shadow:5px 5px 0 var(--accent)}
+.state b{padding:5px 16px;border-radius:99px;background:var(--accent);color:var(--bg);font:800 14px var(--body);letter-spacing:.12em;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.state b::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--bg);animation:pl 1.8s ease-in-out infinite}
+.state>div{display:grid;gap:6px;font-weight:600}
+.state.closed{border-color:var(--line);box-shadow:5px 5px 0 var(--line)}.state.closed b{background:var(--dim)}.state.closed b::before{animation:none}
+.slots{display:flex;align-items:center;gap:6px;list-style:none;margin:0;padding:0}
+.slots li{width:22px;height:22px;border-radius:50%;border:2.5px solid var(--accent);background:var(--card)}
+.slots li.used{background:var(--accent)}
+.slots em{margin-left:6px;font-style:normal;font-size:13px;color:var(--dim);font-weight:700}
+@keyframes pl{50%{transform:scale(1.5);opacity:.5}}
+.art{position:relative;aspect-ratio:1;max-width:420px;width:100%;justify-self:center}
+.art>img{position:absolute;width:56%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;border:5px solid #fff;box-shadow:0 8px 22px rgba(0,0,0,.2)}
+.art .f0{top:0;right:2%;transform:rotate(7deg)}.art .f1{bottom:0;right:0;transform:rotate(-4deg)}.art .f2{bottom:6%;left:0;transform:rotate(-9deg)}
+.av{position:absolute;left:4%;top:4%;width:62%;aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--accent2);border:6px solid var(--card);outline:3px solid var(--accent);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.art:not(:has(>img)) .av{inset:0;left:0;top:0;width:100%;position:absolute}
+.av>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
 .price{padding:20px;display:flex;flex-direction:column;gap:6px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s}
 .price input{position:absolute;opacity:0;pointer-events:none}
@@ -154,7 +172,7 @@ function build(input, { fontCss } = {}) {
 .steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
 .steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;padding:12px 18px}
 .steps li::before{content:counter(s);flex:0 0 30px;height:30px;border-radius:50%;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:14px}
-.rules{margin:0;padding-left:1.3em}.rules li{margin-bottom:6px}.rules li::marker{color:var(--accent)}
+
 .apply{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .apply button{font:inherit;font-weight:800;padding:12px 24px;border-radius:99px;border:2px solid var(--fg);background:none;color:var(--fg);cursor:pointer}
 .apply button:hover{background:var(--fg);color:var(--bg)}
@@ -163,11 +181,32 @@ pre{margin:16px 0 0;padding:16px 20px;border-radius:16px;background:var(--card);
 .board li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px}
 .pill{font-size:12.5px;font-weight:800;padding:2px 12px;border-radius:99px}
 .pill.wait{background:var(--line);color:var(--fg)}.pill.wip{background:var(--accent2);color:var(--fg)}.pill.done{background:var(--accent);color:var(--bg)}
-@media(max-width:560px){.top{grid-template-columns:1fr;text-align:center;justify-items:center}}
+.sec h2{display:flex;align-items:center;gap:14px;font-size:clamp(26px,3.4vw,38px)}
+.sec h2::after{content:"";flex:1;height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--accent) 0 10px,transparent 10px 18px);opacity:.5}
+.price{padding-top:26px;overflow:hidden}
+.price::before{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.price strong{font-size:28px}
+.steps{grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:14px;position:relative}
+.steps li{flex-direction:column;gap:10px;padding:18px 16px;position:relative;font-size:14.5px}
+.steps li::before{flex:0 0 38px;width:38px;height:38px;font-size:17px;box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 22%,var(--bg))}
+.steps li:not(:last-child)::after{content:"";position:absolute;top:36px;left:calc(100% - 4px);width:22px;height:3px;background:var(--accent);opacity:.5}
+.rules{list-style:none;padding:20px 24px;margin:0;background:var(--card);border:2px dashed var(--accent);border-radius:20px;display:grid;gap:10px}
+.rules li{position:relative;padding-left:30px;margin:0}
+.rules li::before{content:"✓";position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:800}
+#apply .apply{padding:clamp(20px,3vw,30px);border-radius:26px;background:linear-gradient(120deg,var(--accent),color-mix(in srgb,var(--accent) 60%,var(--accent2)));box-shadow:6px 6px 0 var(--fg)}
+#apply .btn{background:var(--bg);color:var(--fg)}
+#apply .btn:hover{background:var(--card);color:var(--fg)}
+#apply .apply button{border-color:var(--bg);color:var(--bg)}
+#apply .apply button:hover{background:var(--bg);color:var(--fg)}
+pre{background:repeating-linear-gradient(transparent 0 31px,color-mix(in srgb,var(--accent) 22%,transparent) 31px 32px),var(--card);line-height:32px;padding:6px 22px 8px;border:2px solid var(--fg);border-radius:6px 20px 20px 20px}
+.board li{border-width:2px;border-style:solid;border-color:var(--line)}
+.pill.done{transform:rotate(-4deg);border:2px solid var(--bg);outline:2px solid var(--accent)}
+@media(max-width:760px){.steps li::after{display:none}.top{grid-template-columns:1fr}.art{max-width:300px;order:-1}.state{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.state b::before{animation:none}}
 `
   const body = `<div class="page">
-  <header class="top"><div class="av">${avatar ? `<img src="${avatar}" alt="${esc(c.name)} 프로필 이미지">` : phHtml(c.name)}</div><div><h1>${esc(c.name)}</h1>${c.bio ? `<p>${multi(c.bio)}</p>` : ''}</div></header>
-  <div class="state${c.open ? '' : ' closed'}"><b>${c.open ? '커미션 오픈' : '커미션 마감'}</b>${c.statusText ? `<span>${esc(c.statusText)}</span>` : ''}</div>
+  <header class="top"><div class="txt"><p class="eyebrow">COMMISSION INFO</p><h1>${esc(c.name)}</h1>${c.bio ? `<p class="bio">${multi(c.bio)}</p>` : ''}<div class="state${c.open ? '' : ' closed'}"><b>${c.open ? 'OPEN' : 'CLOSED'}</b><div>${c.statusText ? `<span>${esc(c.statusText)}</span>` : ''}${slotsTotal ? `<ul class="slots" aria-label="슬롯 ${slotsTotal - slotsLeft}/${slotsTotal} 사용 중">${Array.from({ length: slotsTotal }, (_, i) => `<li class="${i < slotsTotal - slotsLeft ? 'used' : ''}"></li>`).join('')}<em>${c.open ? `남은 슬롯 ${slotsLeft}/${slotsTotal}` : '다음 오픈을 기다려 주세요'}</em></ul>` : ''}</div></div></div>
+    <div class="art">${fan.length ? fan.map((f, i) => `<img class="f${i}" src="${f}" alt="" loading="lazy" decoding="async">`).join('') : ''}<div class="av">${avatar ? `<img src="${avatar}" alt="${esc(c.name)} 프로필 이미지">` : phHtml(c.name)}</div></div></header>
   ${galleryHtml(c.samples, `${c.name} 샘플`, '샘플')}
   ${prices.length ? `<section class="sec" id="prices"><h2>커미션 종류와 가격</h2><div class="prices">${prices.map(([k, p, d, t]) => `<label class="price card"><input type="radio" name="ty" data-name="${esc(k)}" data-price="${num(p) || ''}"><h3>${esc(k)}</h3><strong>${esc(p || '')}</strong>${d ? `<p>${esc(d)}</p>` : ''}${t ? `<small>작업 기간 ${esc(t)}</small>` : ''}</label>`).join('')}</div>${opts.length ? `<ul class="opts">${opts.map(([k, v]) => `<li><label><input type="checkbox" name="op" data-name="${esc(k)}"${pct(v) !== null ? ` data-pct="${pct(v)}"` : num(v) ? ` data-add="${num(v)}"` : ''}> ${esc(k)}</label><b>${esc(v || '')}</b></li>`).join('')}</ul>` : ''}${est ? '<div class="est card"><div><small>선택한 견적</small><strong id="total" aria-live="polite"></strong></div><p id="estnote"></p></div>' : ''}</section>` : ''}
   ${steps.length ? `<section class="sec" id="steps"><h2>진행 과정</h2><ol class="steps">${steps.map((s) => `<li class="card">${esc(s)}</li>`).join('')}</ol></section>` : ''}

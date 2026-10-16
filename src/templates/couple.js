@@ -124,6 +124,17 @@ function build(input, { fontCss } = {}) {
   const cfg = jsonForScript({ date })
   const css = `
 .who.a{--pc:${colA}}.who.b{--pc:${colB}}
+body{background-image:radial-gradient(ellipse 60% 40% at 8% 0%,color-mix(in srgb,${colA} 22%,transparent),transparent),radial-gradient(ellipse 60% 40% at 92% 6%,color-mix(in srgb,${colB} 22%,transparent),transparent)}
+header h1{background:linear-gradient(90deg,${colA},${colB});-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;padding:0 .1em}
+.eyebrow{display:inline-block;margin:0 0 10px;padding:4px 16px;border-radius:99px;background:var(--card);border:1.5px solid var(--accent);color:var(--accent);font:800 12px/1.4 var(--body);letter-spacing:.3em}
+.sec h2{display:flex;align-items:center;justify-content:center;gap:16px}
+.sec h2::before,.sec h2::after{content:"";height:3px;width:clamp(30px,10vw,90px);border-radius:2px;background:linear-gradient(90deg,transparent,var(--accent))}
+.sec h2::after{transform:scaleX(-1)}
+.q{border-radius:24px;box-shadow:4px 4px 0 color-mix(in srgb,var(--accent) 16%,transparent)}
+.q::after{content:"";position:absolute;bottom:-9px;left:34px;width:18px;height:18px;transform:rotate(45deg);background:var(--card);border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line)}
+.q:nth-child(2)::after{left:auto;right:34px}
+.anni li{border-radius:18px;border-left:6px solid var(--accent);position:relative}
+.anni li:nth-child(odd){border-left-color:${colA}}.anni li:nth-child(even){border-left-color:${colB}}
 .page{max-width:1000px;margin:0 auto;padding:clamp(24px,5vw,64px) clamp(16px,4vw,32px)}
 header{text-align:center;margin-bottom:clamp(28px,5vw,56px)}
 header h1{margin:0;font:700 clamp(38px,7vw,84px)/1.05 var(--display);letter-spacing:-.02em}
@@ -156,23 +167,27 @@ header p{margin:10px 0 0;color:var(--dim);font-size:clamp(15px,1.8vw,19px)}
 .anni time{color:var(--dim);font-size:14px}
 .anni span{font-size:12.5px;font-weight:800;padding:2px 12px;border-radius:99px;background:var(--accent2);color:var(--fg)}
 .anni li.done{opacity:.55}.anni li.done span{background:none;border:1.5px solid var(--line)}
-.tl{list-style:none;margin:0 auto;padding:0;max-width:720px;position:relative}
-.tl::before{content:"";position:absolute;left:11px;top:6px;bottom:6px;width:3px;border-radius:2px;background:linear-gradient(${colA},${colB})}
-.tl li{position:relative;padding:0 0 22px 40px}
-.tl li::before{content:"";position:absolute;left:3px;top:6px;width:18px;height:18px;border-radius:50%;background:var(--accent);border:4px solid var(--bg)}
-.tl time{font-size:13px;font-weight:700;color:var(--accent)}
-.tl b{display:block;font-size:18px}
-.tl p{margin:2px 0 0;color:var(--dim);font-size:15px}
+.tl{list-style:none;margin:0 auto;padding:0;max-width:820px;position:relative}
+.tl::before{content:"";position:absolute;left:50%;top:6px;bottom:6px;width:4px;margin-left:-2px;border-radius:2px;background:linear-gradient(${colA},${colB})}
+.tl li{position:relative;width:50%;padding:0 38px 26px 0;box-sizing:border-box}
+.tl li:nth-child(even){margin-left:50%;padding:0 0 26px 38px}
+.tl li::before{content:"";position:absolute;right:-11px;top:14px;width:22px;height:22px;border-radius:50%;background:var(--card);border:5px solid var(--accent)}
+.tl li:nth-child(even)::before{right:auto;left:-11px;border-color:${colB}}
+.tl li:nth-child(odd)::before{border-color:${colA}}
+.tc{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:14px 20px;position:relative;box-shadow:4px 4px 0 color-mix(in srgb,var(--accent) 18%,transparent)}
+.tl time{display:inline-block;font-size:12.5px;font-weight:800;color:var(--card);background:var(--accent);padding:1px 12px;border-radius:99px;margin-bottom:6px}
+.tl b{display:block;font:700 19px var(--display)}
+.tl p{margin:3px 0 0;color:var(--dim);font-size:15px}
 .qa{width:100%;border-collapse:separate;border-spacing:0 8px;font-size:15px}
 .qa th,.qa td{padding:12px 16px;background:var(--card);text-align:center}
 .qa th:first-child,.qa td:first-child{border-radius:14px 0 0 14px;text-align:left;color:var(--dim);font-weight:600}
 .qa th:last-child,.qa td:last-child{border-radius:0 14px 14px 0}
 .qa thead th{background:none;font-size:14px}
 .qa thead th:nth-child(2){color:${colA}}.qa thead th:nth-child(3){color:${colB}}
-@media(max-width:720px){.pair{grid-template-columns:1fr 1fr}.mid{grid-column:1/-1;grid-row:1}.who.b{box-shadow:6px 6px 0 color-mix(in srgb,var(--pc) 30%,transparent)}.qa th:first-child,.qa td:first-child{width:34%}.anni li{grid-template-columns:4em 1fr auto;gap:8px;padding:10px 12px}}
+@media(max-width:720px){.tl::before{left:11px}.tl li,.tl li:nth-child(even){width:auto;margin:0;padding:0 0 22px 40px}.tl li::before,.tl li:nth-child(even)::before{left:0;right:auto}.pair{grid-template-columns:1fr 1fr}.mid{grid-column:1/-1;grid-row:1}.who.b{box-shadow:6px 6px 0 color-mix(in srgb,var(--pc) 30%,transparent)}.qa th:first-child,.qa td:first-child{width:34%}.anni li{grid-template-columns:4em 1fr auto;gap:8px;padding:10px 12px}}
 `
   const body = `<div class="page">
-  <header><h1>${esc(c.title)}</h1>${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ''}</header>
+  <header><p class="eyebrow">OUR STORY</p><br><h1>${esc(c.title)}</h1>${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ''}</header>
   <div class="pair">
     ${person('a', c.nameA, c.infoA, imgA)}
     <div class="mid"><div class="heart" aria-hidden="true"></div>${date ? `<div class="cnt" id="dday">D+--</div><small>${esc(c.dateLabel)}</small><div class="prog" aria-hidden="true"><i id="dprog"></i></div><span class="next" id="dnext"></span>` : ''}</div>
@@ -181,7 +196,7 @@ header p{margin:10px 0 0;color:var(--dim);font-size:clamp(15px,1.8vw,19px)}
   ${c.story ? `<section><p class="story">${multi(c.story)}</p></section>` : ''}
   ${c.quoteA || c.quoteB ? `<section class="sec"><h2>서로에게 한마디</h2><div class="quotes">${c.quoteA ? `<div class="q"><b>${esc(c.nameA)} → ${esc(c.nameB)}</b><p>${esc(c.quoteA)}</p></div>` : ''}${c.quoteB ? `<div class="q"><b>${esc(c.nameB)} → ${esc(c.nameA)}</b><p>${esc(c.quoteB)}</p></div>` : ''}</div></section>` : ''}
   ${date ? '<section class="sec" id="annisec" hidden><h2>기념일</h2><ol class="anni" id="anni"></ol></section>' : ''}
-  ${tl.length ? `<section class="sec" id="timeline"><h2>타임라인</h2><ol class="tl">${tl.map(([d, t, x]) => `<li><time>${esc(d)}</time><b>${esc(t || '')}</b>${x ? `<p>${esc(x)}</p>` : ''}</li>`).join('')}</ol></section>` : ''}
+  ${tl.length ? `<section class="sec" id="timeline"><h2>타임라인</h2><ol class="tl">${tl.map(([d, t, x]) => `<li><div class="tc"><time>${esc(d)}</time><b>${esc(t || '')}</b>${x ? `<p>${esc(x)}</p>` : ''}</div></li>`).join('')}</ol></section>` : ''}
   ${qa.length ? `<section class="sec" id="qa"><h2>취향 문답</h2><table class="qa"><thead><tr><th></th><th>${esc(c.nameA)}</th><th>${esc(c.nameB)}</th></tr></thead><tbody>${qa.map(([q, a, b]) => `<tr><td>${esc(q)}</td><td>${esc(a || '')}</td><td>${esc(b || '')}</td></tr>`).join('')}</tbody></table></section>` : ''}
   ${galleryHtml(c.gallery, `${c.title} 일러스트`)}
   ${noticeHtml(c)}
