@@ -19,7 +19,9 @@ const hostile = (defaults) => Object.fromEntries(Object.entries(defaults).map(([
 function audit(html) {
   const problems = []
   const walk = (n) => {
+    const isIcon = n.nodeName === 'link' && n.attrs.some((x) => x.name === 'rel' && x.value === 'icon')
     if (n.attrs) for (const { name, value } of n.attrs) {
+      if (isIcon && name === 'href' && /^data:image\/svg\+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww\.w3\.org%2F2000%2Fsvg%22[A-Za-z0-9%._~\-]*$/.test(value)) continue // our own favicon only
       if (/^on/i.test(name)) problems.push(`<${n.nodeName} ${name}>`)
       if (/^(href|src|action|formaction|xlink:href)$/i.test(name) && /^\s*(javascript:|vbscript:|data:(?!image\/(png|jpeg|webp|gif);base64,))/i.test(value)) problems.push(`<${n.nodeName} ${name}="${value.slice(0, 20)}">`)
     }

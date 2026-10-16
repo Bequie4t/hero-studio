@@ -1,5 +1,6 @@
-import { koOptions, koStack } from '../fonts/ko-registry.js'
-import { cols, esc, fontHead, hex, imgSrc, initial, lines, list, multi, safeUrl } from './util.js'
+// PAUSED: community-specific home. Not registered in ../index.js. It will get its own, dedicated product later.
+import { koOptions, koStack } from '../../fonts/ko-registry.js'
+import { cols, esc, fontHead, hex, imgSrc, initial, lines, list, multi, safeUrl } from '../util.js'
 
 // Template: 자캐 커뮤니티 — a community hub (world, rules, how to join, members, notices, FAQ).
 const PALETTES = [

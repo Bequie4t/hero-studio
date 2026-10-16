@@ -45,7 +45,7 @@ export default function Hero() {
         <div className="hero-copy">
           <h1 id="hero-title"><span>HEROCAT</span><span>STUDIO</span></h1>
           <p className="hero-lead">내 자캐를 위한 작은 집,<br />무료로 지어 드려요.</p>
-          <p className="hero-sub">자캐 설정집, 커플 아카이브, 커뮤니티, 합작 모집, 커미션 안내까지. 템플릿을 고르고 글과 그림만 바꾸면 끝나요.</p>
+          <p className="hero-sub">자캐 설정집, 커플 아카이브, 캐릭터 도감, 세계관 연표, 커미션 안내, 덕질 홈까지. 템플릿을 고르고 글과 그림만 바꾸면 끝나요.</p>
           <div className="hero-cta">
             <a className="hero-btn" href="#/templates">무료로 시작하기</a>
             <a className="hero-link" href="#/#how">어떻게 쓰나요? <span aria-hidden="true">›</span></a>

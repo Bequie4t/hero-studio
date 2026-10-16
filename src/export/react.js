@@ -25,6 +25,7 @@ export function toReactProject(html, { name = 'site' } = {}) {
   const title = pull(html, /<title>([\s\S]*?)<\/title>/, 'title')[1]
   const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || ''
   const fontHref = (html.match(/<link rel="stylesheet" href="([^"]+)"/) || [])[1]
+  const icon = (html.match(/<link rel="icon" href="([^"]+)"/) || [])[1]
   const fontsCss = (html.match(/<style id="fonts">([\s\S]*?)<\/style>/) || [])[1]
   const css = pull(html, /<style>([\s\S]*?)<\/style>/, 'styles')[1].trim()
   const body = pull(html, /<body>([\s\S]*)<\/body>/, 'body')[1]
@@ -116,7 +117,7 @@ ${jsx.split('\n').map((l) => '      ' + l).join('\n')}
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>${title}</title>
     <meta name="description" content="${desc}" />
-${fontHref ? `    <link rel="preconnect" href="https://fonts.googleapis.com" />
+${icon ? `    <link rel="icon" href="${icon}" />\n` : ''}${fontHref ? `    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="${fontHref}" />\n` : ''}  </head>
   <body>
