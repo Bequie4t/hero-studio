@@ -1,4 +1,4 @@
-import { cols, esc, imgSrc, jsonForScript, lines, list, multi, safeUrl } from './util.js'
+import { cols, esc, imgSrc, initial, jsonForScript, lines, list, multi, safeUrl } from './util.js'
 import { footerGroup, footerHtml, fontsOf, noticeHtml, paletteColors, shell, styleGroup, whenKo } from './kobase.js'
 
 // Template: 합작·이벤트 모집 — recruiting page with a deadline countdown, schedule, roles, rules and a participant list.
@@ -94,6 +94,7 @@ function build(input, { fontCss } = {}) {
   const goalN = Math.max(0, Math.min(500, parseInt(c.goal, 10) || 0))
   const paras = String(c.intro || '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
   const css = `
+.page{max-width:960px}
 .hero{position:relative;overflow:hidden;isolation:isolate;border-radius:32px;padding:clamp(32px,6vw,72px) clamp(20px,5vw,56px);text-align:center;background:var(--card);border:1.5px solid var(--line)}
 .hero::before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(60% 90% at 15% 0,color-mix(in srgb,var(--accent) 30%,transparent),transparent 70%),radial-gradient(50% 80% at 90% 20%,color-mix(in srgb,var(--accent2) 55%,transparent),transparent 70%)}
 .hero img.bn{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
@@ -110,10 +111,38 @@ function build(input, { fontCss } = {}) {
 .dl{margin:0;font-size:14px;color:var(--dim)}
 .done{margin:20px 0 0;font:400 clamp(20px,3vw,30px)/1.2 var(--display);color:var(--accent)}
 .cta{margin-top:22px}
+.hero{box-shadow:8px 8px 0 color-mix(in srgb,var(--accent) 35%,transparent);border:2px solid var(--fg)}
+.badge{letter-spacing:.14em}
+.badge::before{animation:pl 1.8s ease-in-out infinite}
+@keyframes pl{50%{transform:scale(1.5);opacity:.5}}
+main,.page{counter-reset:sc}
+.sec{counter-increment:sc}
+.sec h2{display:flex;align-items:center;gap:12px;font-size:clamp(24px,3vw,34px)}
+.sec h2::before{content:counter(sc,decimal-leading-zero);font:800 13px var(--body);letter-spacing:.1em;padding:3px 10px;border-radius:99px;background:var(--fg);color:var(--bg);transform:translateY(-2px)}
+.sec h2::after{content:"";flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px)}
+.two h2::after{display:none}
+.rulelist{list-style:none;padding:0;display:grid;gap:10px}
+.rulelist li{position:relative;padding:12px 16px 12px 46px;background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0}
+.rulelist li::before{content:"✓";position:absolute;left:14px;top:12px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--bg);font-size:13px;font-weight:800}
+#rules .perks li::before{content:"★";background:var(--accent2);color:var(--fg)}
+.steps{counter-reset:s}
+.steps li{border-top:5px solid var(--accent);padding:18px 18px 20px}
+.steps li::before{font-size:44px;opacity:.9}
+ul.sched{position:relative;padding-left:28px}
+.sched::before{content:"";position:absolute;left:8px;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--accent);opacity:.5}
+.sched li{position:relative}
+.sched li::before{content:"";position:absolute;left:-26px;top:50%;margin-top:-8px;width:16px;height:16px;border-radius:50%;background:var(--card);border:4px solid var(--accent)}
+.people li.card{flex-direction:row;align-items:center;gap:12px;padding:10px 14px}
+.people i{flex:0 0 40px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:800 17px var(--display);font-style:normal;background:var(--accent);color:var(--bg)}
+.people li:nth-child(3n+2) i{background:var(--accent2);color:var(--fg)}
+.people li:nth-child(3n) i{background:var(--fg);color:var(--bg)}
+.people div{display:flex;flex-direction:column;line-height:1.35}
+.goal{max-width:none}.goal div{height:16px;border:2px solid var(--fg);background:var(--card)}
+.goal i{background:repeating-linear-gradient(45deg,var(--accent) 0 10px,color-mix(in srgb,var(--accent) 75%,#fff) 10px 20px)}
 .intro p{margin:0 0 1em;max-width:64ch}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
 .rulelist{margin:0;padding-left:1.3em}.rulelist li{margin-bottom:8px}.rulelist li::marker{color:var(--accent)}
-.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
 .steps li{counter-increment:s;padding:16px 18px}
 .steps li::before{content:counter(s);display:block;font:400 34px/1 var(--display);color:var(--accent);margin-bottom:6px}
 .sched{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -136,10 +165,10 @@ function build(input, { fontCss } = {}) {
     ${c.open ? `<div class="cta"><a class="btn" href="${esc(safeUrl(c.applyUrl))}" target="_blank" rel="noopener noreferrer">${esc(c.applyLabel)}</a></div>` : ''}
   </header>
   ${paras.length ? `<section class="sec intro" id="intro"><h2>합작 소개</h2>${paras.map((p) => `<p>${multi(p)}</p>`).join('')}${roles.length ? `<ul class="chips">${roles.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}</section>` : ''}
-  ${conds.length || perks.length ? `<section class="sec two" id="rules">${conds.length ? `<div><h2>참여 조건</h2><ul class="rulelist">${conds.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}${perks.length ? `<div><h2>참여 혜택</h2><ul class="rulelist">${perks.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}</section>` : ''}
+  ${conds.length || perks.length ? `<section class="sec two" id="rules">${conds.length ? `<div><h2>참여 조건</h2><ul class="rulelist">${conds.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}${perks.length ? `<div><h2>참여 혜택</h2><ul class="rulelist perks">${perks.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}</section>` : ''}
   ${steps.length ? `<section class="sec" id="steps"><h2>참여 방법</h2><ol class="steps">${steps.map((s) => `<li class="card">${esc(s)}</li>`).join('')}</ol></section>` : ''}
   ${sched.length ? `<section class="sec" id="schedule"><h2>일정</h2><ul class="sched">${sched.map(([d, t]) => `<li class="card"><time>${esc(d)}</time><span>${esc(t || '')}</span></li>`).join('')}</ul></section>` : ''}
-  ${people.length ? `<section class="sec" id="people"><h2>참가자<span class="count">${people.length}명</span></h2>${goalN ? `<div class="goal"><div><i class="g${Math.round(Math.min(100, people.length / goalN * 100) / 5) * 5}"></i></div><p>${people.length} / ${goalN}명${people.length >= goalN ? ' · 목표 달성!' : ` · ${goalN - people.length}자리 남았어요`}</p></div>` : ''}<ul class="people">${people.map(([n, r]) => `<li class="card"><b>${esc(n)}</b>${r ? `<span>${esc(r)}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
+  ${people.length ? `<section class="sec" id="people"><h2>참가자<span class="count">${people.length}명</span></h2>${goalN ? `<div class="goal"><div><i class="g${Math.round(Math.min(100, people.length / goalN * 100) / 5) * 5}"></i></div><p>${people.length} / ${goalN}명${people.length >= goalN ? ' · 목표 달성!' : ` · ${goalN - people.length}자리 남았어요`}</p></div>` : ''}<ul class="people">${people.map(([n, r]) => `<li class="card"><i aria-hidden="true">${esc(initial(n))}</i><div><b>${esc(n)}</b>${r ? `<span>${esc(r)}</span>` : ''}</div></li>`).join('')}</ul></section>` : ''}
   ${faq.length ? `<section class="sec" id="faq"><h2>자주 묻는 질문</h2>${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a || '')}</p></details>`).join('')}</section>` : ''}
   ${noticeHtml(c)}
   ${footerHtml(c, c.name)}
