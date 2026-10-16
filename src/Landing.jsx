@@ -4,13 +4,13 @@ import SiteNav from './SiteNav.jsx'
 import Thumb from './Thumb.jsx'
 
 const STEPS = [
-  { t: '템플릿 고르기', d: '자캐 설정집, 커플 아카이브, 커뮤니티, 덕질 홈 중에서 시작해요.' },
+  { t: '템플릿 고르기', d: '자캐 설정집, 커플 아카이브, 캐릭터 도감, 세계관 연표, 커뮤니티, 합작 모집, 커미션 안내, 덕질 홈 중에서 시작해요.' },
   { t: '글과 그림 채우기', d: '이름, 설정, 일러스트를 넣으면 오른쪽에서 바로 보여요. 그림 색으로 테마도 만들어 줘요.' },
   { t: '무료로 공개하기', d: '배포용 파일을 받아 무료 호스팅에 올리면 내 주소가 생겨요. 올리는 방법은 단계별로 안내해 드려요.' },
 ]
 
 const FEATURES = [
-  { t: '자캐 덕후를 위한 구성', d: '프로필 표, 관계도, 타임라인, 취향 문답, 갤러리까지 필요한 칸을 미리 만들어 뒀어요.' },
+  { t: '자캐 덕후를 위한 구성', d: '프로필 표, 관계도, 연표, 도감, 가격표, 모집 일정, 갤러리까지 필요한 칸을 미리 만들어 뒀어요.' },
   { t: 'D+ 카운터', d: '커플 기념일부터 며칠째인지 세어 주고, 다음 100일과 주년까지 남은 날도 알려 줘요.' },
   { t: '그림 색으로 테마 만들기', d: '대표 일러스트의 색을 읽어서 페이지 색을 맞춰 줘요. 밝은 버전과 어두운 버전 중에 골라요.' },
   { t: '한글 폰트 내장', d: '감성 명조, 동글동글 제목체, 손글씨까지. 파일 안에 들어 있어서 어디서 열어도 똑같이 보여요.' },
@@ -49,7 +49,7 @@ export default function Landing() {
         <div className="l-copy">
           <p className="l-eyebrow">무료 · 가입 없음 · 파일 하나로 끝</p>
           <h1>내 자캐를 위한 작은 집, 5분이면 지어요.</h1>
-          <p className="l-sub">자캐 설정집, 커플 아카이브, 커뮤니티 사이트, 덕질 홈페이지까지. 템플릿을 고르고 글과 그림만 바꾸면, 무료로 공개할 수 있는 웹페이지가 만들어져요.</p>
+          <p className="l-sub">자캐 설정집부터 커플 아카이브, 커뮤니티, 합작 모집, 커미션 안내, 덕질 홈페이지까지. 템플릿을 고르고 글과 그림만 바꾸면, 무료로 공개할 수 있는 웹페이지가 만들어져요.</p>
           <div className="l-cta">
             <a className="btn-solid" href="#/templates">템플릿 고르기</a>
             <a className="btn-line" href="#/#how">어떻게 쓰나요?</a>
@@ -102,7 +102,7 @@ export default function Landing() {
         <a className="btn-solid" href="#/templates">무료로 시작하기</a>
       </section>
 
-      <footer className="l-foot"><span>Hero Studio</span><span>만든 페이지는 모두 내 것이에요. 일반 HTML 파일이라 어디에 올려도 돼요.</span></footer>
+      <footer className="l-foot"><span>herocat studio</span><span>만든 페이지는 모두 내 것이에요. 일반 HTML 파일이라 어디에 올려도 돼요.</span></footer>
     </div>
   )
 }

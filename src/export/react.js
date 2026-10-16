@@ -130,7 +130,7 @@ ${fontHref ? `    <link rel="preconnect" href="https://fonts.googleapis.com" />
     ...(fontsCss ? { 'src/fonts.css': fontsCss.trim() + '\n' } : {}),
     ...Object.fromEntries(images.map((im, i) => [`src/assets/img${i}.${im.ext}`, Uint8Array.from(atob(im.b64), (ch) => ch.charCodeAt(0))])),
     'src/Hero.css': css + '\n',
-    'README.md': `# ${pkg}\n\nA React page made with Hero Studio.\n\n    npm install\n    npm run dev      # http://localhost:5173\n    npm run build    # static files in dist/\n\nEdit the text in \`src/Hero.jsx\` and the colours or fonts in \`src/Hero.css\`.\n`,
+    'README.md': `# ${pkg}\n\nherocat studio로 만든 React 페이지예요.\n\n    npm install\n    npm run dev      # http://localhost:5173\n    npm run build    # dist/ 에 정적 파일 생성\n\n글은 \`src/Hero.jsx\`, 색과 폰트는 \`src/Hero.css\`에서 고칠 수 있어요.\n`,
     '.gitignore': 'node_modules\ndist\n',
   }
 }
