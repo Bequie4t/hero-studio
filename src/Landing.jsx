@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { TEMPLATES } from './templates/index.js'
 import Hero from './Hero.jsx'
 import Thumb from './Thumb.jsx'
+import Atmosphere from './Atmosphere.jsx'
 
 const STEPS = [
   { t: '템플릿 고르기', d: '자캐 설정집, 커플 아카이브, 캐릭터 도감, 세계관 연표, 합작 모집, 커미션 안내, 덕질 홈 중에서 시작해요.' },
@@ -12,6 +13,7 @@ const STEPS = [
 const FEATURES = [
   { t: '자캐 덕후를 위한 구성', d: '프로필 표, 관계도, 연표, 도감, 가격표, 모집 일정, 갤러리까지 필요한 칸을 미리 만들어 뒀어요.' },
   { t: 'D+ 카운터', d: '커플 기념일부터 며칠째인지 세어 주고, 다음 100일과 주년까지 남은 날도 알려 줘요.' },
+  { t: '무드와 분위기 효과', d: '한밤 골목, 첫눈, 유리 바다 같은 무드 8종. 별무리, 눈과 벚꽃잎, 고양이 발자국, 배경음악, 입장 화면까지 켜고 끌 수 있어요.' },
   { t: '그림 색으로 테마 만들기', d: '대표 일러스트의 색을 읽어서 페이지 색을 맞춰 줘요. 밝은 버전과 어두운 버전 중에 골라요.' },
   { t: '한글 폰트 내장', d: '감성 명조, 동글동글 제목체, 손글씨까지. 파일 안에 들어 있어서 어디서 열어도 똑같이 보여요.' },
   { t: '그림은 내 브라우저 안에서만', d: '올린 이미지는 서버로 보내지 않아요. 줄여서 파일 안에 넣어 둘 뿐이에요.' },
@@ -48,6 +50,8 @@ export default function Landing() {
       <section className="l-strip" aria-label="특징">
         <span>가입 없이 바로</span><span>한글 폰트 내장</span><span>그림은 내 브라우저에서만</span><span>무료로 공개</span>
       </section>
+
+      <Atmosphere />
 
       <section className="l-sec" id="how">
         <h2>세 단계면 내 페이지가 열려요</h2>

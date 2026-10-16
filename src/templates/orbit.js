@@ -1,15 +1,18 @@
 import { sectionDefaults, sectionFields, sections } from './sections.js'
-import { clamp, esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug } from './util.js'
+import { clamp, esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug, koFont, navId } from './util.js'
+import { MOODS, fxDefaults, fxGroupSoft, fxOf, withFx } from './fx.js'
 
 // Template: centred SaaS hero with a slow gradient orb rising from the bottom edge.
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'dusk', label: '해질녘', bg: '#0e0b1a', fg: '#f4f1ff', c1: '#7c5cff', c2: '#ff5ca8', c3: '#3dd6c6' },
   { id: 'dawn', label: '새벽', bg: '#fff6ee', fg: '#25140d', c1: '#ff8a4c', c2: '#ffcf5c', c3: '#ff5c7a' },
   { id: 'lagoon', label: '라군', bg: '#06151a', fg: '#e8fbff', c1: '#19c6d9', c2: '#3b82f6', c3: '#a3e635' },
   { id: 'cloud', label: '구름', bg: '#f5f7fb', fg: '#10131a', c1: '#6d8dff', c2: '#b79bff', c3: '#7fe3d3' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS.map((m) => ({ ...m, c1: m.accent, c2: m.accent2, c3: m.fg }))]
 
 const FONTS = [
+  koFont('pretendard'), koFont('jua'), koFont('blackhan'), koFont('gowunbatang'),
   { id: 'sora', label: 'Sora', css: "'Sora'", q: 'Sora:wght@400;600;700' },
   { id: 'outfit', label: 'Outfit', css: "'Outfit'", q: 'Outfit:wght@400;500;700' },
   { id: 'bricolage', label: 'Bricolage Grotesque', css: "'Bricolage Grotesque'", q: 'Bricolage+Grotesque:wght@400;600;800' },
@@ -17,20 +20,23 @@ const FONTS = [
 
 const defaults = {
   ...sectionDefaults,
-  features: 'One-click weeks | Lumen lays out a realistic week from your calendar and tasks.\nMove one thing | Drag a task and everything else shifts to fit.\nQuiet by default | No pings. A single summary each morning.',
-  plans: 'Free | $0 | For one calendar | 1 calendar;Weekly plan;Community help\n*Pro | $9/mo | For busy people | 3 calendars;Auto reschedule;Priority help\nTeam | $7/seat | For small crews | Shared plans;Admin controls',
-  footerText: '© 2026 Lumen. All rights reserved.',
-  brand: 'Lumen',
-  nav: 'Product, Pricing, Customers, Blog',
-  badge: 'New: weekly planning is here',
-  heading: 'Plan your week in\nthe time of one coffee.',
-  subtitle: 'Lumen reads your calendar and tasks, then lays out a week that actually fits. Move one thing and everything else adjusts.',
-  cta: 'Try Lumen free',
+  ...fxDefaults,
+  features: '버튼 한 번에 한 주 | 캘린더와 할 일로 현실적인 한 주를 짜 줘요.\n하나만 옮기기 | 할 일 하나를 끌어다 놓으면 나머지가 알아서 밀려요.\n조용한 기본값 | 알림은 없어요. 아침마다 요약 한 번뿐이에요.',
+  plans: '무료 | 0원 | 캘린더 하나 | 캘린더 1개;주간 계획;커뮤니티 도움\n*프로 | 월 9,000원 | 바쁜 사람용 | 캘린더 3개;자동 일정 조정;우선 도움\n팀 | 인당 월 7,000원 | 작은 팀용 | 공용 계획;관리자 권한',
+  footerText: '© 2026 낮잠. 모든 권리 보유.',
+  brand: '낮잠',
+  featuresTitle: '낮잠이 해 주는 일',
+  pricingTitle: '요금',
+  nav: '제품, 요금, 고객, 블로그',
+  badge: '새 기능: 주간 계획이 왔어요',
+  heading: '한 주 계획을\n커피 한 잔 시간에.',
+  subtitle: '낮잠은 캘린더와 할 일을 읽고, 정말 지킬 수 있는 한 주를 짜 줘요. 하나만 옮기면 나머지가 알아서 맞춰져요.',
+  cta: '낮잠 무료로 써 보기',
   ctaUrl: '#start',
-  link: 'Watch the 2 min tour',
+  link: '2분 투어 보기',
   linkUrl: '#tour',
-  logos: 'Northwind, Fieldnote, Basalt, Kitebird, Oxbow',
-  logosLabel: 'Trusted by planners at',
+  logos: '치즈네 가게, 고등어 서점, 두부 베이커리, 먹물 공방, 달무리 카페',
+  logosLabel: '골목 가게들이 함께 써요',
   shot: '',
   shotAlt: '',
   bg: PALETTES[0].bg,
@@ -38,7 +44,7 @@ const defaults = {
   c1: PALETTES[0].c1,
   c2: PALETTES[0].c2,
   c3: PALETTES[0].c3,
-  font: 'sora',
+  font: 'pretendard',
   speed: 5,
 }
 
@@ -66,6 +72,7 @@ const fields = [
     { key: 'speed', label: '오브 속도', type: 'range', min: 1, max: 10 },
   ] },
   ...sectionFields,
+  fxGroupSoft,
 ]
 
 function build(input, { fontCss } = {}) {
@@ -78,8 +85,8 @@ function build(input, { fontCss } = {}) {
   const shot = imgSrc(c.shot)
   const brand = c.brand || 'Your brand'
   const heading = String(c.heading || '').split('\n').slice(0, 3)
-  return `<!doctype html>
-<html lang="en">
+  const page = `<!doctype html>
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -129,8 +136,8 @@ ${sx.css}</style>
 <div class="first">
 <header class="top">
   <a class="brand" href="#"><i></i>${esc(brand)}</a>
-  <nav aria-label="Main">${list(c.nav).map((n) => `<a href="#${esc(slug(n))}">${esc(n)}</a>`).join('')}</nav>
-  <a class="pill" href="${esc(safeUrl(c.ctaUrl))}">Sign in</a>
+  <nav aria-label="주요 메뉴">${list(c.nav).map((n) => `<a href="#${esc(navId(n))}">${esc(n)}</a>`).join('')}</nav>
+  <a class="pill" href="${esc(safeUrl(c.ctaUrl))}">로그인</a>
 </header>
 <main class="hero">
   ${c.badge ? `<span class="badge">${esc(c.badge)}</span>` : ''}
@@ -149,6 +156,7 @@ ${sx.html}
 </body>
 </html>
 `
+  return withFx(page, c, c.brand)
 }
 
 export default {

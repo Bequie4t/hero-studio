@@ -32,7 +32,7 @@ export function toReactProject(html, { name = 'site' } = {}) {
   const bodyClass = (bodyM[1].match(/class="([^"]*)"/) || [])[1] || ''
   const body = bodyM[2]
   const cfgJson = (body.match(/<script type="application\/json" id="cfg">([\s\S]*?)<\/script>/) || [])[1]
-  const runtime = (body.match(/<script>([\s\S]*?)<\/script>/) || [])[1]
+  const runtime = [...body.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]).join('\n') || undefined
   const markup = body.replace(/<script[\s\S]*?<\/script>/g, '').trim()
 
   // Uploaded images become real files under src/assets instead of giant inline strings.

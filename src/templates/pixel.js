@@ -1,40 +1,45 @@
 // Template: pixel mascot hero (scanline mascot, typewriter speech bubble, ticker strip).
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'paper', label: '종이', bg: '#f1f1ee', fg: '#0a0a0a', accent: '#0a0a0a' },
   { id: 'mint', label: '민트', bg: '#e6f4ec', fg: '#0b2a1e', accent: '#10b981' },
   { id: 'peach', label: '복숭아', bg: '#fff0e3', fg: '#2b1608', accent: '#ff6a3d' },
   { id: 'night', label: '밤', bg: '#0c0d12', fg: '#eaeaf0', accent: '#7cf3c5' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS.map((m) => (m))]
 const DISPLAY_FONTS = [
+  koFont('galmuri'), koFont('jua'), koFont('blackhan'),
   { id: 'pixelify', label: 'Pixelify Sans', css: "'Pixelify Sans'", q: 'Pixelify+Sans:wght@500;700' },
   { id: 'silkscreen', label: 'Silkscreen', css: "'Silkscreen'", q: 'Silkscreen:wght@400;700' },
   { id: 'press', label: 'Press Start 2P', css: "'Press Start 2P'", q: 'Press+Start+2P' },
 ]
 const defaults = {
   ...sectionDefaults,
-  features: 'Sorts the noise | Pip files newsletters, receipts and alerts before you wake up.\nBooks without ping-pong | Proposes three times, then confirms the one that works.\nGuards your focus | Holds low-priority pings until your next break.',
-  plans: 'Free | $0 | For one inbox | 1 inbox;Daily summary;Community help\n*Pro | $8/mo | For busy people | 3 inboxes;Meeting booking;Priority help\nTeam | $6/seat | For small crews | Shared rules;Admin controls;Onboarding call',
-  footerText: '© 2026 Pip. All rights reserved.',
-  brand: 'Pip',
-  nav: 'Powers, Routine, Haunts, Story, Help',
-  heading: 'PIP\nINBOX GHOST',
-  subtitle: 'Pip floats through your inbox at night, files the noise, and leaves only what needs you.',
-  cta: 'Start Free',
+  ...fxDefaults,
+  features: '소음 걸러 주기 | 뉴스레터와 영수증, 알림을 아침 전에 정리해 둬요.\n핑퐁 없는 일정 | 후보를 세 번 제안하고 맞는 시간으로 확정해요.\n집중 지켜 주기 | 급하지 않은 알림은 쉬는 시간까지 붙잡아 둬요.',
+  plans: '무료 | 0원 | 편지함 하나 | 편지함 1개;매일 요약;커뮤니티 도움\n*프로 | 월 8,000원 | 바쁜 집사용 | 편지함 3개;일정 잡기;우선 도움\n팀 | 인당 월 6,000원 | 작은 팀용 | 공용 규칙;관리자 권한;도입 상담',
+  footerText: '© 2026 나비 · 골목에서 정성껏 만들었어요.',
+  brand: '나비',
+  featuresTitle: '나비가 해 주는 일',
+  pricingTitle: '요금',
+  nav: '능력, 하루, 아지트, 이야기, 도움',
+  heading: '나비,\n편지함\n고양이',
+  subtitle: '나비는 밤마다 편지함 위를 사뿐사뿐 걸으며 소음은 정리하고, 정말 필요한 메일만 남겨 둬요.',
+  cta: '무료로 시작',
   ctaUrl: '#start',
-  link: 'See Pip work',
+  link: '나비가 일하는 모습',
   linkUrl: '#demo',
-  bubbles: 'Boo! 12 emails filed,\n1 invoice flagged.\n---\nMeeting moved.\nYou are free at 3pm.\n---\nInbox zero. Go outside.',
-  stats: '24k inboxes cleared, 9/10 smiles, 0 lost threads',
-  mascot: 'ghost',
+  bubbles: '야옹! 메일 12통 정리했어요.\n청구서 1건은 표시해 뒀어요.\n---\n회의를 옮겼어요.\n오후 3시는 비어 있어요.\n---\n받은편지함 0통.\n이제 낮잠 자러 가요.',
+  stats: '정리한 편지함 2.4만 개, 만족도 10점 중 9점, 잃어버린 메일 0통',
+  mascot: 'cat',
   bg: PALETTES[0].bg,
   fg: PALETTES[0].fg,
   accent: PALETTES[0].accent,
-  displayFont: 'pixelify',
-  bodyFont: 'jetbrains',
+  displayFont: 'galmuri',
+  bodyFont: 'galmurimono',
   lines: 5,
   layout: 'right',
   ticker: true,
-  tickerItems: 'Sorts mail, Books meetings, Guards focus, Drafts replies, Chases invoices',
+  tickerItems: '메일 정리, 일정 잡기, 집중 지키기, 답장 초안, 청구서 독촉',
 }
 const fields = [
   { group: '내용', open: true, items: [
@@ -65,10 +70,12 @@ const fields = [
     { key: 'tickerItems', label: '항목', type: 'text', hint: '쉼표(,)로 구분해요.' },
   ] },
   ...sectionFields,
+  fxGroupSoft,
 ]
 import { SPRITES } from '../sprites.js'
 import { sectionDefaults, sectionFields, sections } from './sections.js'
-import { clamp, esc, fontHead, fontsHref, hex, jsonForScript, list, MONO_FONTS, multi, pick, safeUrl, slug } from './util.js'
+import { clamp, esc, fontHead, fontsHref, hex, jsonForScript, list, MONO_FONTS, multi, pick, safeUrl, slug, koFont, navId } from './util.js'
+import { MOODS, fxDefaults, fxGroupSoft, fxOf, withFx } from './fx.js'
 
 // A tiny 5x5 mirrored logo mark derived from the brand name.
 function logoMark(name, fg) {
@@ -170,8 +177,8 @@ function build(input, { fontCss } = {}) {
   const tickRow = tick.map((t) => `<span>${esc(t)}</span>`).join('')
   const cfg = jsonForScript({ bubbles, fg, lines, sprite: { rows: sprite.rows, eyeRows: sprite.eyeRows } })
 
-  return `<!doctype html>
-<html lang="en">
+  const page = `<!doctype html>
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -224,7 +231,7 @@ ${sx.css}</style>
 <div class="first">
 <header class="top">
   <a class="brand" href="#">${logoMark(brand, fg)}<span>${esc(brand)}</span></a>
-  <nav aria-label="Main">${list(c.nav).map((n) => `<a href="#${esc(slug(n))}">${esc(n)}</a>`).join('')}</nav>
+  <nav aria-label="주요 메뉴">${list(c.nav).map((n) => `<a href="#${esc(navId(n))}">${esc(n)}</a>`).join('')}</nav>
 </header>
 <main class="hero layout-${c.layout === 'left' ? 'left' : 'right'}">
   <div class="copy">
@@ -238,7 +245,7 @@ ${sx.css}</style>
   </div>
   <div class="stage">
     <div class="bubble"><span id="bt"></span><i class="caret"></i></div>
-    <canvas id="mascot" role="img" aria-label="Animated pixel mascot"></canvas>
+    <canvas id="mascot" role="img" aria-label="움직이는 픽셀 마스코트"></canvas>
   </div>
 </main>
 ${c.ticker && tick.length ? `<div class="ticker" aria-hidden="true"><div>${tickRow}${tickRow}${tickRow}${tickRow}</div></div>` : ''}
@@ -249,6 +256,7 @@ ${sx.html}
 </body>
 </html>
 `
+  return withFx(page, c, c.brand)
 }
 
 export default {

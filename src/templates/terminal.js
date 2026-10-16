@@ -1,34 +1,39 @@
 import { sectionDefaults, sectionFields, sections } from './sections.js'
-import { clamp, esc, fontHead, fontsHref, hex, jsonForScript, list, MONO_FONTS, multi, pick, safeUrl, slug } from './util.js'
+import { clamp, esc, fontHead, fontsHref, hex, jsonForScript, list, MONO_FONTS, multi, pick, safeUrl, slug, koFont, navId } from './util.js'
+import { MOODS, fxDefaults, fxGroupSoft, fxOf, withFx } from './fx.js'
 
 // Template: terminal launch page (live-typing terminal window next to the pitch).
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'phosphor', label: '형광 초록', bg: '#0b100d', fg: '#d8f5e2', accent: '#4ade80' },
   { id: 'amber', label: '호박색', bg: '#120d06', fg: '#fde8c8', accent: '#fbbf24' },
   { id: 'ice', label: '얼음', bg: '#0a1018', fg: '#dbe9fb', accent: '#60a5fa' },
   { id: 'chalk', label: '분필', bg: '#f3f2ee', fg: '#15151a', accent: '#e4572e' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS.map((m) => (m))]
 
 const defaults = {
   ...sectionDefaults,
-  features: 'One command | init, build, test and deploy from a single binary.\nWorks offline | Cache everything locally and sync when you are back.\nReadable logs | Plain text output you can pipe anywhere.',
-  plans: 'Hobby | $0 | Side projects | 3 apps;Community support\n*Pro | $12/mo | Shipping weekly | Unlimited apps;Preview URLs;Email support\nTeam | $9/seat | Shared deploys | Roles;Audit log;SSO',
-  footerText: '© 2026 shipit. MIT licensed.',
-  brand: 'shipit',
-  nav: 'Docs, Changelog, Pricing, GitHub',
-  heading: 'Ship it from\nyour terminal.',
-  subtitle: 'One command builds, tests and deploys your app. No dashboards, no YAML, no waiting for a build queue.',
-  cta: 'Get started',
+  ...fxDefaults,
+  features: '명령어 하나 | init, build, test, deploy를 하나의 실행 파일로 끝내요.\n오프라인 지원 | 로컬에 캐시해 두고, 다시 연결되면 동기화해요.\n읽기 쉬운 로그 | 어디로든 파이프로 넘길 수 있는 평문 출력이에요.',
+  plans: '취미 | 0원 | 사이드 프로젝트 | 앱 3개;커뮤니티 지원\n*프로 | 월 12,000원 | 매주 배포하는 팀 | 앱 무제한;미리보기 주소;이메일 지원\n팀 | 인당 월 9,000원 | 공용 배포 | 역할 관리;감사 로그;SSO',
+  footerText: '© 2026 냥배포 · MIT 라이선스',
+  brand: '냥배포',
+  featuresTitle: '이런 점이 좋아요',
+  pricingTitle: '요금',
+  nav: '문서, 변경 내역, 요금, GitHub',
+  heading: '배포는\n고양이처럼\n조용히.',
+  subtitle: '명령어 한 줄로 빌드하고, 테스트하고, 배포해요. 대시보드도, YAML도, 빌드 대기열도 없어요.',
+  cta: '시작하기',
   ctaUrl: '#start',
-  link: 'Read the docs',
+  link: '문서 읽기',
   linkUrl: '#docs',
-  install: 'npm i -g shipit',
-  script: '$ shipit init\nCreated shipit.json\n$ shipit deploy\nBuilding 214 files...\nTests passed (38/38)\nLive at https://my-app.shipit.dev',
-  stats: 'MIT licensed, 3.1k stars, Works offline',
+  install: 'npm i -g nyangdeploy',
+  script: '$ nyang init\nnyang.json을 만들었어요\n$ nyang deploy\n파일 214개를 빌드하는 중...\n테스트 통과 (38/38)\n공개 주소: https://my-app.nyang.dev',
+  stats: 'MIT 라이선스, 별 3.1천 개, 오프라인에서도 동작',
   bg: PALETTES[0].bg,
   fg: PALETTES[0].fg,
   accent: PALETTES[0].accent,
-  bodyFont: 'jetbrains',
+  bodyFont: 'galmurimono',
   scan: true,
 }
 
@@ -55,6 +60,7 @@ const fields = [
     { key: 'bodyFont', label: '폰트', type: 'select', options: MONO_FONTS },
   ] },
   ...sectionFields,
+  fxGroupSoft,
 ]
 
 const RUNTIME = String.raw`
@@ -90,7 +96,7 @@ const RUNTIME = String.raw`
 
   var b = document.getElementById('copy');
   if (b) b.addEventListener('click', function () {
-    var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1600); };
+    var done = function () { b.textContent = '복사했어요'; setTimeout(function () { b.textContent = '복사'; }, 1600); };
     if (navigator.clipboard) navigator.clipboard.writeText(cfg.install).then(done, function () { b.textContent = 'Select it'; });
     else b.textContent = 'Select it';
   });
@@ -106,8 +112,8 @@ function build(input, { fontCss } = {}) {
   const heading = String(c.heading || '').split('\n').slice(0, 3)
   const script = String(c.script || '').split('\n').map((l) => l.replace(/\s+$/, '')).filter(Boolean).slice(0, 14)
   const cfg = jsonForScript({ lines: script, install: String(c.install || '') })
-  return `<!doctype html>
-<html lang="en">
+  const page = `<!doctype html>
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -165,20 +171,20 @@ ${sx.css}</style>
 <div class="first">
 <header class="top">
   <a class="brand" href="#">${esc(brand)}</a>
-  <nav aria-label="Main">${list(c.nav).map((n) => `<a href="#${esc(slug(n))}">${esc(n)}</a>`).join('')}</nav>
+  <nav aria-label="주요 메뉴">${list(c.nav).map((n) => `<a href="#${esc(navId(n))}">${esc(n)}</a>`).join('')}</nav>
 </header>
 <main class="hero">
   <div>
     <h1>${heading.map((l) => `<span>${esc(l)}</span>`).join('')}</h1>
     <p class="sub">${multi(c.subtitle)}</p>
-    ${c.install ? `<div class="install"><code>${esc(c.install)}</code><button id="copy" type="button">Copy</button></div>` : ''}
+    ${c.install ? `<div class="install"><code>${esc(c.install)}</code><button id="copy" type="button">복사</button></div>` : ''}
     <div class="ctas">
       <a class="btn" href="${esc(safeUrl(c.ctaUrl))}">${esc(c.cta)}</a>
       ${c.link ? `<a class="link" href="${esc(safeUrl(c.linkUrl))}">${esc(c.link)}</a>` : ''}
     </div>
     <ul class="facts">${list(c.stats).map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
   </div>
-  <div class="win" aria-label="Terminal demo">
+  <div class="win" aria-label="터미널 데모">
     <div class="bar"><i></i><i></i><i></i><span>${esc(slug(brand).replace(/^-|-$/g, '') || 'app')} — zsh</span></div>
     <div id="term"></div>
   </div>
@@ -190,6 +196,7 @@ ${sx.html}
 </body>
 </html>
 `
+  return withFx(page, c, c.brand)
 }
 
 export default {

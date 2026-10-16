@@ -1,15 +1,18 @@
 import { sectionDefaults, sectionFields, sections } from './sections.js'
-import { esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug } from './util.js'
+import { esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug, koFont, navId } from './util.js'
+import { MOODS, fxDefaults, fxGroupSoft, fxOf, withFx } from './fx.js'
 
 // Template: editorial portfolio hero (oversized name, availability pill, project index).
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'cream', label: '크림', bg: '#efe9df', fg: '#1b1a17', accent: '#d9461f' },
   { id: 'ink', label: '먹', bg: '#111111', fg: '#f1efe9', accent: '#c8ff3d' },
   { id: 'sky', label: '하늘', bg: '#dfeaf5', fg: '#0f1b2d', accent: '#3b6cf6' },
   { id: 'blush', label: '블러시', bg: '#f6e3e0', fg: '#2a1214', accent: '#c2314d' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS.map((m) => (m))]
 
 const FONTS = [
+  koFont('pretendard'), koFont('gowunbatang'), koFont('jua'), koFont('blackhan'),
   { id: 'bricolage', label: 'Bricolage Grotesque', css: "'Bricolage Grotesque'", q: 'Bricolage+Grotesque:wght@400;600;800' },
   { id: 'fraunces', label: 'Fraunces', css: "'Fraunces'", q: 'Fraunces:wght@400;600;800' },
   { id: 'syne', label: 'Syne', css: "'Syne'", q: 'Syne:wght@500;700;800' },
@@ -17,25 +20,27 @@ const FONTS = [
 
 const defaults = {
   ...sectionDefaults,
-  features: 'Brand identity | Names, marks and the rules that keep them consistent.\nWebsites | Fast, accessible sites you can edit without a developer.\nMotion | Short loops and launch films for product moments.',
-  plans: 'Sprint | $2,400 | One focused week | Brief and moodboard;Two concepts;One round of edits\n*Studio | $6,800 | A full identity | Logo system;Guidelines;Launch assets\nRetainer | $3,200/mo | Ongoing design | Weekly hours;Priority queue',
-  pricingTitle: 'Ways to work together',
-  footerText: '© 2026 Mara Ellison. Made by hand.',
-  brand: 'Mara Ellison',
-  nav: 'Work, About, Notes, Contact',
-  status: 'Booking projects for November',
-  heading: 'Designer\nof small, loud\nbrands.',
-  subtitle: 'I help young studios and shops look like the best version of themselves. Based in Lisbon, working everywhere.',
+  ...fxDefaults,
+  features: '브랜드 아이덴티티 | 이름, 심벌, 그리고 일관성을 지켜 주는 규칙까지.\n웹사이트 | 개발자 없이도 고칠 수 있는 빠르고 접근성 좋은 사이트.\n모션 | 제품의 순간을 위한 짧은 루프와 런칭 영상.',
+  plans: '스프린트 | 240만 원 | 집중해서 한 주 | 브리프와 무드보드;시안 2종;수정 1회\n*스튜디오 | 680만 원 | 정체성 전체 | 로고 시스템;가이드라인;런칭 소재\n리테이너 | 월 320만 원 | 꾸준한 디자인 | 주간 작업 시간;우선 대기열',
+  pricingTitle: '함께 일하는 방법',
+  footerText: '© 2026 꼬리별. 손으로 만들었어요.',
+  brand: '꼬리별',
+  featuresTitle: '하는 일',
+  nav: '작업, 소개, 노트, 연락',
+  status: '11월 프로젝트 예약 받는 중',
+  heading: '작고 당당한\n고양이 브랜드를\n그려요.',
+  subtitle: '고양이 가게와 작은 스튜디오가 가장 멋진 모습으로 보이도록 도와요. 서울에서 일하고, 어디든 작업해요.',
   photo: '',
   photoAlt: '',
-  cta: 'Say hello',
+  cta: '인사하기',
   ctaUrl: 'mailto:hello@example.com',
-  projectsTitle: 'Selected work',
-  projects: 'Fieldnote Coffee | Identity | 2026\nBasalt Ceramics | Website | 2025\nKitebird Air | Motion | 2025\nOxbow Press | Packaging | 2024',
+  projectsTitle: '골라 담은 작업',
+  projects: '치즈 커피 | 브랜드 아이덴티티 | 2026\n고등어 서점 | 웹사이트 | 2025\n두부 베이커리 | 모션 | 2025\n먹물 공방 | 패키지 | 2024',
   bg: PALETTES[0].bg,
   fg: PALETTES[0].fg,
   accent: PALETTES[0].accent,
-  font: 'bricolage',
+  font: 'pretendard',
 }
 
 const fields = [
@@ -60,6 +65,7 @@ const fields = [
     { key: 'font', label: '폰트', type: 'select', options: FONTS },
   ] },
   ...sectionFields,
+  fxGroupSoft,
 ]
 
 function build(input, { fontCss } = {}) {
@@ -71,8 +77,8 @@ function build(input, { fontCss } = {}) {
   const brand = c.brand || 'Your name'
   const heading = String(c.heading || '').split('\n').slice(0, 3)
   const projects = String(c.projects || '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 8)
-  return `<!doctype html>
-<html lang="en">
+  const page = `<!doctype html>
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -121,7 +127,7 @@ ${sx.css}</style>
 <div class="first">
 <header class="top">
   <a class="brand" href="#">${esc(brand)}</a>
-  <nav aria-label="Main">${list(c.nav).map((n) => `<a href="#${esc(slug(n))}">${esc(n)}</a>`).join('')}</nav>
+  <nav aria-label="주요 메뉴">${list(c.nav).map((n) => `<a href="#${esc(navId(n))}">${esc(n)}</a>`).join('')}</nav>
   ${c.status ? `<span class="status">${esc(c.status)}</span>` : ''}
 </header>
 <main class="hero">
@@ -142,6 +148,7 @@ ${sx.html}
 </body>
 </html>
 `
+  return withFx(page, c, c.brand)
 }
 
 export default {

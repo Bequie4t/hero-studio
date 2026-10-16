@@ -1,6 +1,28 @@
 // 16x16 pixel sprites. Legend: ' ' empty, '.' light, 'o' mid, '#' dark, '@' black.
 // eyeRows lists the rows whose '@' pixels turn into 'o' while blinking.
 export const SPRITES = {
+  cat: {
+    label: 'Cat',
+    eyeRows: [4, 5],
+    rows: [
+      '  ##        ##  ',
+      '  #o#      #o#  ',
+      '  #oo######oo#  ',
+      ' #oooooooooooo# ',
+      ' #oo@@oooo@@oo# ',
+      ' #oo@@oooo@@oo# ',
+      '.#ooooo@@ooooo#.',
+      ' #oooo#oo#oooo# ',
+      '  #oooooooooo#  ',
+      '  #oooooooooo#  ',
+      ' #oooooooooooo# ',
+      ' #oooooooooooo# ',
+      ' #oo..oooo..oo# ',
+      '  ####    ####  ',
+      '          ##oo# ',
+      '                ',
+    ],
+  },
   ghost: {
     label: 'Ghost',
     eyeRows: [4, 5],

@@ -5,16 +5,16 @@ import { esc, list, safeUrl } from './util.js'
 //   --sx-accent  accent colour    --sx-head  heading font stack    --sx-radius  corner radius
 export const sectionDefaults = {
   featuresOn: true,
-  featuresTitle: 'What you get',
+  featuresTitle: '이런 점이 좋아요',
   features:
-    'Fast to start | Pick a template, change the words, and you are done in minutes.\nYours to keep | Download plain files and host them anywhere you like.\nBuilt to adapt | Colours, fonts and sections change with one click.',
+    '바로 시작해요 | 템플릿을 고르고 글만 바꾸면 몇 분 만에 끝나요.\n내 것으로 가져가요 | 일반 파일로 받아서 어디에든 올릴 수 있어요.\n마음대로 바꿔요 | 색, 폰트, 섹션을 클릭 한 번으로 바꿔요.',
   pricingOn: true,
-  pricingTitle: 'Simple pricing',
+  pricingTitle: '요금',
   plans:
-    'Free | $0 | To get started | One project;Community help\n*Pro | $9/mo | For regular use | Unlimited projects;Priority help\nTeam | $7/seat | For small crews | Shared settings;Admin controls',
+    '무료 | 0원 | 시작하는 분께 | 프로젝트 1개;커뮤니티 도움\n*프로 | 월 9,000원 | 자주 쓰는 분께 | 프로젝트 무제한;우선 도움\n팀 | 인당 월 7,000원 | 작은 팀께 | 공용 설정;관리자 권한',
   footerOn: true,
-  footerText: '© 2026 Your brand. All rights reserved.',
-  footerLinks: 'Privacy, Terms, Contact',
+  footerText: '© 2026 내 브랜드. 모든 권리 보유.',
+  footerLinks: '개인정보, 이용약관, 문의',
 }
 
 export const sectionFields = [
@@ -65,7 +65,7 @@ export function sections(c) {
   }
 
   if (c.footerOn) {
-    html += `<footer class="sx-foot"><span>${esc(c.footerText)}</span><nav aria-label="Footer">${list(c.footerLinks)
+    html += `<footer class="sx-foot"><span>${esc(c.footerText)}</span><nav aria-label="푸터">${list(c.footerLinks)
       .map((l) => `<a href="#">${esc(l)}</a>`)
       .join('')}</nav></footer>`
   }

@@ -210,3 +210,17 @@ dialog.deploy::backdrop{background:rgba(0,0,0,.5)}
 .landing .l-sec h2,.landing .l-final h2{font-family:'Galmuri11','Pretendard',sans-serif;font-weight:700;letter-spacing:0;line-height:1.35;font-size:33px}
 @media(min-width:900px){.landing .l-sec h2,.landing .l-final h2{font-size:44px}}
 .landing .l-steps h3,.landing .l-feats h3{font-family:'Galmuri11','Pretendard',sans-serif;font-weight:700;letter-spacing:0}
+
+/* landing: live mood picker */
+.landing{position:relative;z-index:1}
+.atm-cv{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.l-mood{position:relative;z-index:1;text-align:center}
+.l-lead{max-width:56ch;margin:10px auto 26px;color:var(--muted)}
+.mood-chips,.mood-rows>div{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.mood-chips button,.mood-rows button{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border:1px solid var(--line);border-radius:99px;background:var(--panel);color:var(--fg);font-weight:600;cursor:pointer}
+.mood-chips button i{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.mood-chips button[aria-pressed=true],.mood-rows button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.mood-rows{display:grid;gap:10px;margin-top:22px}
+.mood-rows b{align-self:center;color:var(--muted);font-size:13px;margin-right:6px}
+@media(prefers-reduced-motion:reduce){.atm-cv{display:none}}
+html[data-mood] .hero{--hero-bg:var(--bg);--hero-ink:var(--fg);--hero-sub:var(--muted);--hero-accent:var(--accent);--hero-card:var(--panel);--hero-grid:color-mix(in srgb,var(--fg) 7%,transparent)}

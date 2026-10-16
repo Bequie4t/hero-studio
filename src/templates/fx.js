@@ -146,7 +146,7 @@ function col(){var f=getComputedStyle(document.body).color;return f}
 function draw(t){x.clearRect(0,0,W,H);x.fillStyle=col();for(var i=0;i<S.length;i++){var s=S[i];x.globalAlpha=still?s.a*.7:s.a*(.45+.55*Math.sin(t/1000*s.v*2+s.p));x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill();if(!still){s.y-=s.v*.06*(devicePixelRatio||1);if(s.y<-4)s.y=H+4}}x.globalAlpha=1;if(!still)requestAnimationFrame(draw)}
 size();addEventListener('resize',function(){size();if(still)draw(0)});if(still)draw(0);else requestAnimationFrame(draw)})();`)
   if (on('fxReveal')) parts.push(`(function(){if(!('IntersectionObserver' in window)||${reduce})return;var h=document.documentElement;
-var sel='header>*,section>h2,section>p,section>ul,section>ol,section>dl,.card,.char,.win,.who,.tc,.ev .bd,.price,.q,.notice,.gal figure,.tools,.anni li,.people li';
+var sel='.sx-card,header>*,section>h2,section>p,section>ul,section>ol,section>dl,.card,.char,.win,.who,.tc,.ev .bd,.price,.q,.notice,.gal figure,.tools,.anni li,.people li';
 var els=[].slice.call(document.querySelectorAll(sel)).filter(function(e){return !e.closest('dialog')});
 if(!els.length)return;h.classList.add('rvon');var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -6% 0px'});
 els.forEach(function(e,i){var sib=e.parentNode?[].indexOf.call(e.parentNode.children,e):0;e.style.setProperty('--d',Math.min(sib,8)*70);e.classList.add('rvt');io.observe(e)});
@@ -183,4 +183,17 @@ b.addEventListener('click',function(){g.classList.add('out');h.classList.remove(
   if (music) parts.push(`(function(){var w=document.getElementById('bgm');if(!w)return;var a=w.querySelector('audio'),b=w.querySelector('button'),s=w.querySelector('small');
 b.addEventListener('click',function(){if(a.paused){a.play().then(function(){w.classList.add('on');s.textContent='sound on'},function(){s.textContent='cannot play'})}else{a.pause();w.classList.remove('on');s.textContent='sound off'}})})();`)
   return parts.join('\n')
+}
+
+// For the templates that build their own page: adds the atmosphere layer to a finished HTML string.
+// Colours the effects need (--card, --accent2, ...) are given fallbacks derived from --bg / --fg / --accent.
+const VARS = ':root{--card:color-mix(in srgb,var(--fg) 7%,var(--bg));--accent2:color-mix(in srgb,var(--accent) 35%,var(--bg));--dim:color-mix(in srgb,var(--fg) 62%,var(--bg));--line:color-mix(in srgb,var(--fg) 16%,var(--bg));--accent:var(--c1,#ff7aa2);--display:var(--font,system-ui,sans-serif);--body:var(--font,system-ui,sans-serif)}\n'
+export function withFx(html, c, title = '') {
+  const css = fxCss({ ...c, skin: 'soft' })
+  const js = fxJs(c)
+  const markup = fxHtml(c, title)
+  let out = html.replace(/<style>/, () => `<style>${VARS}`).replace(/<\/style>(?![\s\S]*<\/style>[\s\S]*<\/head>)/, () => `${css}\n</style>`)
+  out = out.replace(/<body([^>]*)>/, (m, attrs) => `<body${attrs}>\n${markup}`)
+  if (js) out = out.replace(/<\/body>/, () => `<script>${js}</script>\n</body>`)
+  return out
 }

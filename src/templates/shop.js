@@ -1,15 +1,18 @@
 import { sectionDefaults, sectionFields, sections } from './sections.js'
-import { esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug } from './util.js'
+import { esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug, koFont, navId } from './util.js'
+import { MOODS, fxDefaults, fxGroupSoft, fxOf, withFx } from './fx.js'
 
 // Template: storefront product hero (photo, price, rating, perks).
-const PALETTES = [
+const BASE_PALETTES = [
   { id: 'clay', label: '점토', bg: '#f3ece4', fg: '#2a1d16', accent: '#c4572f' },
   { id: 'moss', label: '이끼', bg: '#e9eee3', fg: '#1d2a1c', accent: '#4f7a3a' },
   { id: 'ink', label: '먹', bg: '#101113', fg: '#f1efe8', accent: '#e8b04a' },
   { id: 'sky', label: '하늘', bg: '#e6eef6', fg: '#14202e', accent: '#2f6fb7' },
 ]
+const PALETTES = [...BASE_PALETTES, ...MOODS.map((m) => (m))]
 
 const FONTS = [
+  koFont('gowunbatang'), koFont('pretendard'), koFont('jua'), koFont('blackhan'),
   { id: 'fraunces', label: 'Fraunces', css: "'Fraunces'", q: 'Fraunces:wght@400;600;800' },
   { id: 'bricolage', label: 'Bricolage Grotesque', css: "'Bricolage Grotesque'", q: 'Bricolage+Grotesque:wght@400;600;800' },
   { id: 'outfit', label: 'Outfit', css: "'Outfit'", q: 'Outfit:wght@400;500;700' },
@@ -17,30 +20,31 @@ const FONTS = [
 
 const defaults = {
   ...sectionDefaults,
-  featuresTitle: 'Why you will love it',
-  features: 'Hand thrown | Every mug is shaped on a wheel, so no two are alike.\nStays warm | Thick walls hold heat for up to two hours.\nBuilt to last | A food-safe glaze that survives the dishwasher.',
+  ...fxDefaults,
+  featuresTitle: '이런 점이 좋아요',
+  features: '손으로 빚었어요 | 물레로 하나씩 빚어서 똑같은 머그가 없어요.\n오래 따뜻해요 | 두꺼운 벽이 두 시간 가까이 온기를 지켜요.\n오래 써요 | 식기세척기에도 끄떡없는 식품용 유약이에요.',
   pricingOn: false,
-  footerText: '© 2026 Kiln & Co. Made in small batches.',
-  brand: 'Kiln & Co.',
-  nav: 'Shop, Story, Care, Cart',
-  badge: 'New glaze: Moss',
-  heading: 'The mug that keeps\nyour coffee warm.',
-  subtitle: 'Thrown by hand, glazed twice and fired for ten hours. A mug heavy enough to feel good and light enough to use every day.',
-  price: '$38',
-  comparePrice: '$46',
+  footerText: '© 2026 털뭉치 도자기. 소량씩 만들어요.',
+  brand: '털뭉치 도자기',
+  nav: '상점, 이야기, 관리법, 장바구니',
+  badge: '새 유약: 이끼 초록',
+  heading: '커피가 식지 않는\n고양이 머그.',
+  subtitle: '손으로 빚고, 두 번 유약을 바르고, 열 시간 구워요. 손에 쥐면 든든하고 매일 쓰기엔 가벼운 머그예요.',
+  price: '38,000원',
+  comparePrice: '46,000원',
   rating: '4.9',
-  reviews: '1,284 reviews',
-  perks: 'Dishwasher safe, Lead-free glaze, Free shipping over $60',
-  cta: 'Add to cart',
+  reviews: '후기 1,284개',
+  perks: '식기세척기 가능, 무연 유약, 6만 원 이상 무료 배송',
+  cta: '장바구니 담기',
   ctaUrl: '#cart',
-  link: 'Read the story',
+  link: '이야기 읽기',
   linkUrl: '#story',
   photo: '',
   photoAlt: '',
   bg: PALETTES[0].bg,
   fg: PALETTES[0].fg,
   accent: PALETTES[0].accent,
-  font: 'fraunces',
+  font: 'gowunbatang',
 }
 
 const fields = [
@@ -70,13 +74,14 @@ const fields = [
     { key: 'font', label: '폰트', type: 'select', options: FONTS },
   ] },
   ...sectionFields,
+  fxGroupSoft,
 ]
 
-// "Save 17%" from two prices such as "$38" and "$46"; empty when they cannot be compared.
+// "17% 할인" from two prices such as "38,000원" and "46,000원"; empty when they cannot be compared.
 function saving(price, was) {
   const n = (s) => parseFloat(String(s).replace(/[^0-9.]/g, ''))
   const p = n(price), w = n(was)
-  return p > 0 && w > p ? `Save ${Math.round((1 - p / w) * 100)}%` : ''
+  return p > 0 && w > p ? `${Math.round((1 - p / w) * 100)}% 할인` : ''
 }
 
 function build(input, { fontCss } = {}) {
@@ -88,8 +93,8 @@ function build(input, { fontCss } = {}) {
   const heading = String(c.heading || '').split('\n').slice(0, 3)
   const photo = imgSrc(c.photo)
   const save = saving(c.price, c.comparePrice)
-  return `<!doctype html>
-<html lang="en">
+  const page = `<!doctype html>
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -139,13 +144,13 @@ ${sx.css}</style>
 <div class="first">
 <header class="top">
   <a class="brand" href="#">${esc(brand)}</a>
-  <nav aria-label="Main">${list(c.nav).map((n) => `<a href="#${esc(slug(n))}">${esc(n)}</a>`).join('')}</nav>
+  <nav aria-label="주요 메뉴">${list(c.nav).map((n) => `<a href="#${esc(navId(n))}">${esc(n)}</a>`).join('')}</nav>
 </header>
 <main class="hero">
   <div>
     ${c.badge ? `<span class="badge">${esc(c.badge)}</span>` : ''}
     <h1>${heading.map((l) => `<span>${esc(l)}</span>`).join('')}</h1>
-    ${c.rating ? `<p class="rate"><b aria-hidden="true">★★★★★</b><span>${esc(c.rating)} out of 5</span>${c.reviews ? `<span>· ${esc(c.reviews)}</span>` : ''}</p>` : ''}
+    ${c.rating ? `<p class="rate"><b aria-hidden="true">★★★★★</b><span>5점 만점에 ${esc(c.rating)}점</span>${c.reviews ? `<span>· ${esc(c.reviews)}</span>` : ''}</p>` : ''}
     <p class="sub">${multi(c.subtitle)}</p>
     <div class="price"><strong>${esc(c.price)}</strong>${c.comparePrice ? `<s>${esc(c.comparePrice)}</s>` : ''}${save ? `<em>${esc(save)}</em>` : ''}</div>
     <div class="ctas">
@@ -161,6 +166,7 @@ ${sx.html}
 </body>
 </html>
 `
+  return withFx(page, c, c.brand)
 }
 
 export default {
