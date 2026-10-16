@@ -32,8 +32,16 @@ export const galleryHtml = (arr, label, title = '갤러리') => {
   const g = imgs(arr, 8)
   return g.length ? `<section class="sec" id="gallery"><h2>${esc(title)}</h2><div class="gal">${g.map((s, i) => `<figure><img src="${s}" alt="${esc(label)} ${i + 1}" loading="lazy" decoding="async"></figure>`).join('')}</div></section>` : ''
 }
-/** A friendlier stand-in when no illustration was uploaded (decorative, hidden from screen readers). */
-export const phHtml = (name) => `<div class="ph" aria-hidden="true"><b>${esc(initial(name))}</b></div>`
+/** A stand-in portrait when no illustration was uploaded: a tinted character silhouette whose hair varies with the name. */
+const HAIR = [
+  'M27 50C24 20 76 20 73 50C73 62 70 70 66 74L66 52L34 52L34 74C30 70 27 62 27 50Z',
+  'M30 46C30 24 70 24 70 46C70 52 69 56 67 58L33 58C31 56 30 52 30 46Z',
+  'M25 52C20 18 80 18 75 52C75 70 80 80 84 86C70 84 68 70 66 56L34 56C32 70 30 84 16 86C20 80 25 70 25 52Z',
+]
+export const phHtml = (name) => {
+  const h = [...String(name || '?')].reduce((a, ch) => (a * 31 + ch.codePointAt(0)) >>> 0, 7)
+  return `<div class="ph" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice"><path class="hr" d="${HAIR[h % HAIR.length]}"/><path class="sh" d="M10 100C10 76 28 66 50 66C72 66 90 76 90 100Z"/><rect class="nk" x="44" y="54" width="12" height="16" rx="5"/><ellipse class="fc" cx="50" cy="45" rx="14" ry="16"/><path class="hr" d="M35 42C36 28 64 28 65 42C58 37 48 36 35 42Z"/><circle class="ey" cx="44.5" cy="47" r="1.8"/><circle class="ey" cx="55.5" cy="47" r="1.8"/><path class="st" d="M82 16l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path class="st" d="M16 30l1.3 3 3 1.3-3 1.3-1.3 3-1.3-3-3-1.3 3-1.3z"/></svg></div>`
+}
 export const noticeHtml = (c) => (c.notice ? `<section class="sec"><div class="notice">${multi(c.notice)}</div>${linksHtml(c.links)}</section>` : linksHtml(c.links) ? `<section class="sec">${linksHtml(c.links)}</section>` : '')
 export const footerHtml = (c, name) => `<footer>${c.owner ? `© ${esc(c.owner)} · ` : ''}${esc(name)}</footer>`
 
@@ -59,7 +67,13 @@ a{color:inherit}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px}
 .ph{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 24% 18%,color-mix(in srgb,var(--accent2) 70%,#fff),transparent 62%),radial-gradient(circle at 82% 92%,color-mix(in srgb,var(--accent) 38%,transparent),transparent 58%),var(--accent2)}
 .ph::before{content:"";position:absolute;inset:0;background:radial-gradient(color-mix(in srgb,var(--fg) 14%,transparent) 1.4px,transparent 1.8px) 0 0/16px 16px;opacity:.7}
-.ph b{position:relative;font:700 clamp(64px,11vw,120px)/1 var(--display);color:color-mix(in srgb,var(--accent) 82%,var(--fg));text-shadow:4px 4px 0 color-mix(in srgb,var(--card) 75%,transparent)}
+.ph svg{position:absolute;inset:0;width:100%;height:100%}
+.ph .hr{fill:color-mix(in srgb,var(--accent) 70%,var(--fg))}
+.ph .sh{fill:color-mix(in srgb,var(--accent) 45%,var(--card))}
+.ph .nk,.ph .fc{fill:color-mix(in srgb,var(--card) 88%,var(--accent2))}
+.ph .nk{fill:color-mix(in srgb,var(--card) 70%,var(--accent2))}
+.ph .ey{fill:var(--fg)}
+.ph .st{fill:color-mix(in srgb,var(--card) 85%,transparent)}
 .gal figure{cursor:zoom-in}
 dialog#lb{border:0;padding:0;background:transparent;max-width:min(96vw,1100px);max-height:96vh;overflow:visible}
 dialog#lb::backdrop{background:rgba(10,8,18,.82)}

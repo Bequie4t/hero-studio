@@ -127,7 +127,6 @@ function build(input, { fontCss } = {}) {
 .top{display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,3vw,32px);align-items:center}
 .av{width:clamp(96px,16vw,150px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--accent2);position:relative;border:4px solid var(--card);outline:2px solid var(--accent)}
 .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.av .ph b{font-size:56px}
 .top h1{margin:0;font:400 clamp(34px,6vw,64px)/1.1 var(--display)}
 .top p{margin:6px 0 0;color:var(--dim);max-width:52ch}
 .state{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:clamp(20px,3vw,32px);padding:14px 22px;border-radius:20px;background:var(--card);border:2px solid var(--accent)}

@@ -133,7 +133,6 @@ header p{margin:10px 0 0;color:var(--dim);font-size:clamp(15px,1.8vw,19px)}
 .who.b{box-shadow:-6px 6px 0 color-mix(in srgb,var(--pc) 30%,transparent)}
 .av{width:min(100%,220px);aspect-ratio:1;margin:0 auto 14px;border-radius:50%;overflow:hidden;position:relative;border:4px solid var(--card);outline:3px solid var(--pc)}
 .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.av .ph b{font-size:84px}
 .who h2{margin:0;font:700 clamp(22px,3vw,30px) var(--display);color:var(--pc)}
 .who p{margin:4px 0 0;color:var(--dim);font-size:14.5px}
 .mid{text-align:center;min-width:150px}

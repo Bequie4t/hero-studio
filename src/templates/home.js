@@ -122,7 +122,6 @@ body{${c.dots ? 'background-image:radial-gradient(circle,color-mix(in srgb,var(-
 .me{display:grid;grid-template-columns:auto 1fr;gap:clamp(14px,3vw,28px);align-items:center}
 .av{width:clamp(96px,18vw,150px);aspect-ratio:1;border-radius:50%;border:3px solid var(--fg);background:var(--accent2);overflow:hidden;position:relative;box-shadow:4px 4px 0 var(--accent)}
 .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.av .ph b{font-size:clamp(44px,8vw,70px)}
 .me h1{margin:0;font:400 clamp(34px,6vw,58px)/1.05 var(--display)}
 .me p{margin:6px 0 0;color:var(--dim)}
 .tg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0}
@@ -133,7 +132,6 @@ body{${c.dots ? 'background-image:radial-gradient(circle,color-mix(in srgb,var(-
 .oshi{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center}
 .oshi .pic{aspect-ratio:1;border-radius:16px;border:3px solid var(--fg);position:relative;overflow:hidden;background:var(--accent2)}
 .oshi .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.oshi .pic .ph b{font-size:52px}
 .oshi h2{margin:0;font:400 28px/1.2 var(--display)}
 .oshi p{margin:4px 0 0;color:var(--dim);font-size:15px}
 .dd{text-align:center}

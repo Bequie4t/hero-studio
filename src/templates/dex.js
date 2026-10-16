@@ -88,7 +88,6 @@ header small{display:inline-block;margin-top:12px;padding:2px 14px;border-radius
 .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .char{transition:transform .2s,box-shadow .2s;border-top:5px solid var(--cc,var(--accent))}
 .char:hover{transform:translateY(-3px)}
-.pic .ph b{font-size:72px;color:var(--cc,var(--accent))}
 .tools{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:0 0 28px}
 .tools input{font:inherit;padding:9px 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);width:min(100%,280px)}
 .tools .kw.on,.chips .kw.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
