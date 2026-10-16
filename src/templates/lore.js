@@ -1,4 +1,4 @@
-import { cols, esc, lines, multi } from './util.js'
+import { cols, esc, initial, lines, multi } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, shell, styleGroup } from './kobase.js'
 
 // Template: 세계관 연표 — era headers ("# "), timeline events with tags (filterable), factions and a glossary.
@@ -88,15 +88,24 @@ header p{margin:10px 0 0;color:var(--dim);font-size:clamp(15px,1.8vw,19px)}
 .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 8px}
 .tags button{font:inherit;font-size:14px;font-weight:700;padding:5px 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
 .tags button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.eyebrow{display:inline-block;margin:0 0 10px;padding:4px 16px;border-radius:99px;border:1.5px solid var(--accent);color:var(--accent);font:800 12px/1.4 var(--body);letter-spacing:.3em}
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;margin:14px auto 4px;max-width:360px}
+.orn i{flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--accent))}.orn i:last-child{transform:scaleX(-1)}
+.orn b{width:12px;height:12px;transform:rotate(45deg);background:var(--accent);box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--accent)}
+.subt{margin:10px 0 0}
+.meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.meta span{font-size:13px;font-weight:700;padding:3px 14px;border-radius:99px;background:var(--card);border:1px solid var(--line)}
 .tools{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 6px;align-items:center}
 .tools input{font:inherit;padding:7px 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);width:min(100%,240px)}
 .jump{position:sticky;top:0;z-index:5;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:10px 0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px)}
 .jump a{font-size:13.5px;font-weight:700;padding:3px 14px;border-radius:99px;color:var(--fg);text-decoration:none;border:1px solid var(--line)}
 .jump a:hover{background:var(--accent2)}
 .era{scroll-margin-top:60px}
-.era h2{display:flex;align-items:center;gap:14px;font-size:clamp(22px,3vw,30px)}
-.era h2::before{content:"";width:14px;height:14px;transform:rotate(45deg);background:var(--accent)}
-.era h2::after{content:"";flex:1;height:2px;background:var(--line)}
+.era h2{position:relative;display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;margin:0 0 20px;padding:16px 22px;border-radius:20px;background:linear-gradient(100deg,var(--accent),color-mix(in srgb,var(--accent) 55%,var(--accent2)));color:var(--bg);overflow:hidden}
+.era h2::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;border:18px solid color-mix(in srgb,var(--bg) 14%,transparent)}
+.era h2 .en{font:800 12px var(--body);letter-spacing:.25em;opacity:.8}
+.era h2 .tt{font:800 clamp(24px,3.4vw,34px)/1.15 var(--display)}
+.era h2 small{margin-left:auto;font:700 13px var(--body);opacity:.9;position:relative;z-index:1}
 .tl{list-style:none;margin:0;padding:0;display:grid;gap:14px;position:relative}
 .tl::before{content:"";position:absolute;left:calc(clamp(86px,16vw,140px) + 9px);top:8px;bottom:8px;width:2px;background:var(--line)}
 .ev{position:relative;display:grid;grid-template-columns:clamp(86px,16vw,140px) 1fr;gap:0 28px;align-items:start;padding:0}
@@ -111,17 +120,20 @@ header p{margin:10px 0 0;color:var(--dim);font-size:clamp(15px,1.8vw,19px)}
 @media(max-width:560px){.tl::before{display:none}.ev{grid-template-columns:1fr}.ev>time{text-align:left;padding:0 0 4px 4px}.ev .bd::before{display:none}}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:24px}
 dl{margin:0;display:grid;gap:10px}
-dl div{padding:12px 18px}
+dl div.card{padding:12px 18px}
+.fac{display:flex;gap:14px;align-items:center}
+.fac i{flex:0 0 44px;height:44px;border-radius:50%;display:grid;place-items:center;font:800 19px var(--display);font-style:normal;background:var(--accent);color:var(--bg)}
+.fac div{padding:0}
 dt{font:700 17px var(--display)}
 dd{margin:2px 0 0;color:var(--dim);font-size:15px}
 `
   const body = `<div class="page">
-  <header><h1>${esc(c.name)}</h1>${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ''}</header>
+  <header><p class="eyebrow">CHRONICLE</p><h1>${esc(c.name)}</h1><div class="orn" aria-hidden="true"><i></i><b></b><i></i></div>${c.subtitle ? `<p class="subt">${esc(c.subtitle)}</p>` : ''}${count ? `<div class="meta"><span>${named.length || 1}개 시대</span><span>${count}개 사건</span>${factions.length ? `<span>${factions.length}개 세력</span>` : ''}${gloss.length ? `<span>용어 ${gloss.length}</span>` : ''}</div>` : ''}</header>
   ${count > 3 ? `<div class="tools"><input id="q" type="search" placeholder="연표에서 찾기" aria-label="연표 검색">${tags.length ? `<span class="tags" id="tags" role="group" aria-label="분류별로 보기"><button type="button" data-tag="" aria-pressed="true">전체</button>${tags.map((t) => `<button type="button" data-tag="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join('')}</span>` : ''}</div>` : ''}
   ${named.length > 1 ? `<nav class="jump" aria-label="시대로 이동">${named.map((e) => `<a href="#era${eras.indexOf(e)}">${esc(e.name)}</a>`).join('')}</nav>` : ''}
-  ${eras.map((e, n) => `<section class="sec era" id="era${n}">${e.name ? `<h2>${esc(e.name)}</h2>` : ''}<ol class="tl">${e.items.map((i) => `<li class="ev" data-tag="${esc(i.tag)}"><time>${esc(i.when || '')}</time><div class="bd card"><h3>${esc(i.title || '')}${i.tag ? `<em>${esc(i.tag)}</em>` : ''}</h3>${i.desc ? `<p>${multi(i.desc)}</p>` : ''}</div></li>`).join('')}</ol></section>`).join('')}
+  ${eras.map((e, n) => `<section class="sec era" id="era${n}">${e.name ? `<h2><span class="en">ERA ${String(n + 1).padStart(2, '0')}</span><span class="tt">${esc(e.name)}</span>${e.items.length ? `<small>${esc(e.items[0].when || '')}${e.items.length > 1 ? ` → ${esc(e.items[e.items.length - 1].when || '')}` : ''}</small>` : ''}</h2>` : ''}<ol class="tl">${e.items.map((i) => `<li class="ev" data-tag="${esc(i.tag)}"><time>${esc(i.when || '')}</time><div class="bd card"><h3>${esc(i.title || '')}${i.tag ? `<em>${esc(i.tag)}</em>` : ''}</h3>${i.desc ? `<p>${multi(i.desc)}</p>` : ''}</div></li>`).join('')}</ol></section>`).join('')}
   <p class="none" id="none" hidden>찾는 항목이 없어요.</p>
-  ${factions.length || gloss.length ? `<section class="sec two">${factions.length ? `<div id="factions"><h2>주요 세력</h2><dl>${factions.map(([n, d]) => `<div class="card"><dt>${esc(n)}</dt>${d ? `<dd>${esc(d)}</dd>` : ''}</div>`).join('')}</dl></div>` : ''}${gloss.length ? `<div id="glossary"><h2>용어집</h2><dl>${gloss.map(([n, d]) => `<div class="card"><dt>${esc(n)}</dt>${d ? `<dd>${esc(d)}</dd>` : ''}</div>`).join('')}</dl></div>` : ''}</section>` : ''}
+  ${factions.length || gloss.length ? `<section class="sec two">${factions.length ? `<div id="factions"><h2>주요 세력</h2><dl>${factions.map(([n, d]) => `<div class="card fac"><i aria-hidden="true">${esc(initial(n))}</i><div><dt>${esc(n)}</dt>${d ? `<dd>${esc(d)}</dd>` : ''}</div></div>`).join('')}</dl></div>` : ''}${gloss.length ? `<div id="glossary"><h2>용어집</h2><dl>${gloss.map(([n, d]) => `<div class="card"><dt>${esc(n)}</dt>${d ? `<dd>${esc(d)}</dd>` : ''}</div>`).join('')}</dl></div>` : ''}</section>` : ''}
   ${galleryHtml(c.gallery, c.name, '지도와 일러스트')}
   ${noticeHtml(c)}
   ${footerHtml(c, c.name)}

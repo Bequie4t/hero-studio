@@ -35,24 +35,45 @@ const fields = [
   styleGroup(),
 ]
 
-const FILTER = String.raw`
+const RUNTIME = String.raw`
 (function () {
   var q = document.getElementById('q'), cards = [].slice.call(document.querySelectorAll('.char')), kw = '';
+  var dlg = document.getElementById('pf'), box = dlg && dlg.querySelector('.pfb'), cur = null;
   function run() {
-    var t = (q.value || '').trim().toLowerCase(), shown = 0;
+    var t = q ? (q.value || '').trim().toLowerCase() : '', shown = 0;
     cards.forEach(function (c) {
       var ok = (!t || c.dataset.q.indexOf(t) > -1) && (!kw || ('/' + c.dataset.k + '/').indexOf('/' + kw + '/') > -1);
       c.hidden = !ok; if (ok) shown++;
     });
     [].forEach.call(document.querySelectorAll('[data-grp]'), function (g) { g.hidden = !g.querySelector('.char:not([hidden])'); });
-    document.getElementById('none').hidden = shown > 0;
+    var none = document.getElementById('none'); if (none) none.hidden = shown > 0;
     [].forEach.call(document.querySelectorAll('.kw'), function (b) { b.classList.toggle('on', !!kw && b.dataset.kw === kw); });
   }
-  q.addEventListener('input', run);
+  function show(c) {
+    cur = c;
+    var full = c.querySelector('.full').cloneNode(true); full.hidden = false;
+    box.replaceChildren(c.querySelector('.pic').cloneNode(true), full);
+    dlg.className = 'pf ' + (c.className.match(/\bk\d+\b/) || [''])[0];
+    if (!dlg.open) dlg.showModal();
+  }
+  function step(d) {
+    var v = cards.filter(function (c) { return !c.hidden; }), i = v.indexOf(cur);
+    if (v.length) show(v[(i + d + v.length) % v.length]);
+  }
+  if (q) q.addEventListener('input', run);
   document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('.kw'); if (!b) return;
-    kw = kw === b.dataset.kw ? '' : b.dataset.kw; run();
+    var b = e.target.closest && e.target.closest('.kw');
+    if (b && !b.closest('#pf')) { kw = kw === b.dataset.kw ? '' : b.dataset.kw; run(); return; }
+    var o = e.target.closest && e.target.closest('.open'); if (o && dlg) show(o.closest('.char'));
   });
+  if (dlg) {
+    dlg.addEventListener('click', function (e) {
+      if (e.target === dlg || e.target.closest('.x')) dlg.close();
+      else if (e.target.closest('.prev')) step(-1);
+      else if (e.target.closest('.next')) step(1);
+    });
+    dlg.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
+  }
 })();
 `
 
@@ -66,51 +87,84 @@ function build(input, { fontCss } = {}) {
     if (total >= 40) break
     if (!groups.length) groups.push({ name: '', items: [] })
     const [name, tag, kw, desc, col] = cols(line)
-    groups[groups.length - 1].items.push({ name, tag, kw: (kw || '').split('/').map((s) => s.trim()).filter(Boolean), desc, col: /^#[0-9a-f]{6}$/i.test(col || '') ? hex(col, '') : '', img: pics[n++] || '' })
+    groups[groups.length - 1].items.push({ name, tag, kw: (kw || '').split('/').map((s) => s.trim()).filter(Boolean), desc, col: /^#[0-9a-f]{6}$/i.test(col || '') ? hex(col, '') : '', img: pics[n++] || '', no: total + 1 })
     total++
   }
   const cols_ = [...new Set(groups.flatMap((g) => g.items.map((p) => p.col)).filter(Boolean))]
-  const card = (p) => `<article class="char card${p.col ? ' k' + cols_.indexOf(p.col) : ''}" data-q="${esc([p.name, p.tag, ...p.kw].join(' ').toLowerCase())}" data-k="${esc(p.kw.join('/').toLowerCase())}"><div class="pic">${p.img ? `<img src="${p.img}" alt="${esc(p.name)} 일러스트" loading="lazy" decoding="async">` : phHtml(p.name)}</div><div class="in"><h3>${esc(p.name)}</h3>${p.tag ? `<p class="tag">${esc(p.tag)}</p>` : ''}${p.kw.length ? `<ul class="chips">${p.kw.map((k) => `<li><button type="button" class="kw" data-kw="${esc(k.toLowerCase())}">${esc(k)}</button></li>`).join('')}</ul>` : ''}${p.desc ? `<details><summary>자세히 보기</summary><p>${multi(p.desc)}</p></details>` : ''}</div></article>`
+  const num = (p) => String(p.no).padStart(2, '0')
+  const card = (p) => `<article class="char${p.col ? ' k' + cols_.indexOf(p.col) : ''}" data-q="${esc([p.name, p.tag, ...p.kw].join(' ').toLowerCase())}" data-k="${esc(p.kw.join('/').toLowerCase())}">
+<button type="button" class="open" aria-label="${esc(p.name)} 자세히 보기"><span class="pic">${p.img ? `<img src="${p.img}" alt="" loading="lazy" decoding="async">` : phHtml(p.name)}</span><span class="no">No.${num(p)}</span><span class="cap"><b>${esc(p.name)}</b>${p.tag ? `<small>${esc(p.tag)}</small>` : ''}</span></button>
+${p.kw.length ? `<ul class="chips">${p.kw.slice(0, 4).map((k) => `<li><button type="button" class="kw" data-kw="${esc(k.toLowerCase())}">${esc(k)}</button></li>`).join('')}</ul>` : ''}
+<div class="full" hidden><p class="fno">No.${num(p)}</p><h2>${esc(p.name)}</h2>${p.tag ? `<p class="ftag">${esc(p.tag)}</p>` : ''}${p.kw.length ? `<ul class="fkw">${p.kw.map((k) => `<li>${esc(k)}</li>`).join('')}</ul>` : ''}${p.desc ? `<div class="fdesc"><p>${multi(p.desc)}</p></div>` : ''}</div></article>`
   const kwCount = {}
   groups.forEach((g) => g.items.forEach((p) => p.kw.forEach((k) => { kwCount[k] = (kwCount[k] || 0) + 1 })))
   const allKw = Object.keys(kwCount).sort((a, b) => kwCount[b] - kwCount[a])
+  const named = groups.filter((g) => g.name).length
   const css = `
 ${cols_.map((k, i) => `.k${i}{--cc:${k}}`).join('')}
-header{text-align:center;margin-bottom:clamp(20px,4vw,40px)}
-header h1{margin:0;font:700 clamp(34px,6vw,68px)/1.1 var(--display);letter-spacing:-.02em}
-header p{margin:10px 0 0;color:var(--dim);font-size:clamp(15px,1.8vw,19px)}
-header small{display:inline-block;margin-top:12px;padding:2px 14px;border-radius:99px;background:var(--accent);color:var(--bg);font-weight:800;font-size:13px}
-.grp h2{display:flex;align-items:center;gap:12px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/48px 48px;opacity:.45;mask-image:linear-gradient(#000,transparent 70%)}
+.page{position:relative}
+header{text-align:center;margin-bottom:clamp(22px,4vw,44px)}
+.eyebrow{display:inline-block;margin:0 0 12px;padding:4px 14px;border-radius:99px;background:var(--fg);color:var(--bg);font:700 12px/1.4 var(--body);letter-spacing:.2em}
+header h1{margin:0;font:800 clamp(38px,7vw,84px)/1.05 var(--display);letter-spacing:-.025em}
+header p{margin:12px 0 0;color:var(--dim);font-size:clamp(15px,1.8vw,19px)}
+.stats{display:inline-flex;gap:0;margin-top:18px;border:2px solid var(--fg);border-radius:16px;overflow:hidden;background:var(--card)}
+.stats div{padding:6px 20px;text-align:center;border-right:2px solid var(--fg)}
+.stats div:last-child{border:0}
+.stats b{display:block;font:800 22px/1.1 var(--display);color:var(--accent)}
+.stats span{font-size:12px;color:var(--dim);font-weight:700}
+.tools{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin:0 -8px 8px;padding:12px 8px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px)}
+.tools input{font:inherit;padding:9px 18px;border-radius:99px;border:2px solid var(--fg);background:var(--card);color:var(--fg);width:min(100%,260px)}
+.kw{font:inherit;cursor:pointer;color:inherit}
+.tools .kw{font-size:13.5px;font-weight:700;border:1.5px solid var(--line);background:var(--card);border-radius:99px;padding:5px 14px}
+.tools .kw.on,.chips .kw.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+.grp h2{display:flex;align-items:center;gap:12px;font-size:clamp(22px,3vw,32px)}
+.grp h2::before{content:"";width:16px;height:16px;transform:rotate(45deg);background:var(--accent)}
+.grp h2 small{font:700 13px var(--body);color:var(--dim)}
 .grp h2::after{content:"";flex:1;height:2px;background:var(--line)}
-.dex{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),270px));gap:18px;justify-content:center}
-.char{overflow:hidden;display:flex;flex-direction:column}
-.pic{aspect-ratio:1;background:var(--accent2);position:relative}
+.dex{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),260px));gap:22px;justify-content:center}
+.char{display:flex;flex-direction:column;gap:10px}
+.open{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:block;aspect-ratio:3/4;border-radius:22px;overflow:hidden;border:2px solid var(--fg);background:var(--accent2);box-shadow:6px 6px 0 var(--cc,var(--accent));transition:transform .18s,box-shadow .18s}
+.open:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--cc,var(--accent))}
+.open:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.pic{position:absolute;inset:0;display:block}
 .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.char{transition:transform .2s,box-shadow .2s;border-top:5px solid var(--cc,var(--accent))}
-.char:hover{transform:translateY(-3px)}
-.tools{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:0 0 28px}
-.tools input{font:inherit;padding:9px 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);width:min(100%,280px)}
-.tools .kw.on,.chips .kw.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
-.chips .kw,.tools .kw{font:inherit;font-size:12.5px;cursor:pointer;border:1px solid var(--line);background:none;color:inherit;border-radius:99px;padding:2px 10px}
-.chips li{padding:0;border:0;background:none}.chips .kw{font-size:inherit;padding:0;border:0;background:none}
+.no{position:absolute;top:12px;left:12px;padding:2px 10px;border-radius:99px;background:var(--card);color:var(--fg);font:800 11.5px/1.5 var(--body);letter-spacing:.08em;border:1.5px solid var(--fg)}
+.cap{position:absolute;left:0;right:0;bottom:0;padding:38px 16px 14px;background:linear-gradient(transparent,color-mix(in srgb,var(--cc,var(--accent)) 82%,#000));color:#fff;display:flex;flex-direction:column;gap:1px}
+.cap b{font:800 24px/1.2 var(--display);text-shadow:0 1px 6px rgba(0,0,0,.35)}
+.cap small{font-size:13.5px;font-weight:600;opacity:.95}
+.chips{padding:0 4px;gap:6px}
+.chips li{padding:0;border:0;background:none}
+.chips .kw{font-size:12.5px;font-weight:700;border:1.5px solid color-mix(in srgb,var(--cc,var(--accent)) 55%,var(--bg));background:color-mix(in srgb,var(--cc,var(--accent)) 12%,var(--card));border-radius:99px;padding:1px 10px}
 .none{text-align:center;color:var(--dim);margin:30px 0}
-[hidden]{display:none!important}
-.in{padding:14px 18px 16px;display:flex;flex-direction:column;gap:8px}
-.in h3{margin:0;font:700 22px/1.2 var(--display)}
-.tag{margin:0;color:var(--accent);font-weight:700;font-size:14px}
-.in details{border:0;padding:0}
-.in summary{font-size:13.5px;color:var(--dim);justify-content:flex-start;gap:6px}
-.in details p{font-size:14.5px}
+dialog.pf{border:2px solid var(--fg);border-radius:28px;padding:0;background:var(--card);color:var(--fg);width:min(94vw,820px);max-height:92vh;overflow:auto;box-shadow:10px 10px 0 var(--cc,var(--accent))}
+dialog.pf::backdrop{background:rgba(10,8,18,.72)}
+.pfb{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr)}
+.pfb .pic{position:relative;min-height:340px;background:var(--accent2);border-right:2px solid var(--fg)}
+.pfb .full{padding:30px 30px 26px;align-self:center}
+.fno{margin:0;font:800 12px var(--body);letter-spacing:.18em;color:var(--cc,var(--accent))}
+.full h2{margin:4px 0 0;font:800 clamp(30px,5vw,44px)/1.1 var(--display)}
+.ftag{margin:6px 0 0;font-weight:700;color:var(--cc,var(--accent))}
+.fkw{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:14px 0 0;padding:0}
+.fkw li{padding:1px 12px;border-radius:99px;font-size:13px;font-weight:700;background:color-mix(in srgb,var(--cc,var(--accent)) 14%,var(--card));border:1.5px solid color-mix(in srgb,var(--cc,var(--accent)) 50%,var(--card))}
+.fkw li::before{content:"#";opacity:.5}
+.fdesc{margin-top:16px;padding-top:14px;border-top:2px dashed var(--line)}
+.fdesc p{margin:0;color:var(--dim);font-size:15.5px}
+.pf .x,.pf .prev,.pf .next{position:absolute;z-index:2;width:42px;height:42px;border-radius:50%;border:2px solid var(--fg);background:var(--card);color:var(--fg);font:800 18px var(--body);cursor:pointer}
+.pf .x{top:12px;right:12px}.pf .prev{left:12px;bottom:12px}.pf .next{left:62px;bottom:12px}
+@media(max-width:640px){.pfb{grid-template-columns:1fr}.pfb .pic{min-height:0;aspect-ratio:4/3;border-right:0;border-bottom:2px solid var(--fg)}.pfb .full{padding:20px}.grp h2 small{display:none}}
+@media(prefers-reduced-motion:reduce){.open{transition:none}}
 `
   const body = `<div class="page">
-  <header><h1>${esc(c.title)}</h1>${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ''}<small>등록 ${total}명</small></header>
+  <header><p class="eyebrow">CHARACTER DEX</p><h1>${esc(c.title)}</h1>${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ''}<div class="stats"><div><b>${total}</b><span>등록</span></div>${named ? `<div><b>${named}</b><span>소속</span></div>` : ''}<div><b>${allKw.length}</b><span>키워드</span></div></div></header>
   ${total > 4 ? `<div class="tools"><input id="q" type="search" placeholder="이름·키워드로 찾기" aria-label="캐릭터 검색"><button type="button" class="kw" data-kw="">전체</button>${allKw.slice(0, 8).map((k) => `<button type="button" class="kw" data-kw="${esc(k.toLowerCase())}">${esc(k)}</button>`).join('')}</div>` : ''}
-  ${groups.map((g) => `<section class="sec grp" data-grp>${g.name ? `<h2>${esc(g.name)}</h2>` : ''}<div class="dex">${g.items.map(card).join('')}</div></section>`).join('')}
+  ${groups.map((g) => `<section class="sec grp" data-grp>${g.name ? `<h2>${esc(g.name)} <small>${g.items.length}명</small></h2>` : ''}<div class="dex">${g.items.map(card).join('')}</div></section>`).join('')}
   <p class="none" id="none" hidden>찾는 캐릭터가 없어요.</p>
   ${noticeHtml(c)}
   ${footerHtml(c, c.title)}
-</div>`
-  return shell({ c, d: PALETTES[0], title: `${c.title}`, desc: c.subtitle, fontCss, css, body, script: total > 4 ? FILTER : '' })
+</div>
+<dialog id="pf" class="pf" aria-label="캐릭터 상세"><div class="pfb"></div><button type="button" class="x" aria-label="닫기">✕</button><button type="button" class="prev" aria-label="이전 캐릭터">‹</button><button type="button" class="next" aria-label="다음 캐릭터">›</button></dialog>`
+  return shell({ c, d: PALETTES[0], title: `${c.title}`, desc: c.subtitle, fontCss, css, body, script: total ? RUNTIME : '' })
 }
 
 export default {
