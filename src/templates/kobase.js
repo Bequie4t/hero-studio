@@ -130,7 +130,7 @@ ${fontHead(fontCss, '')}
 :root{--bg:${bg};--card:${card};--fg:${fg};--accent:${accent};--accent2:${accent2};--display:${koStack(c.displayFont)};--body:${koStack(c.bodyFont)};--dim:color-mix(in srgb,var(--fg) 62%,var(--bg));--line:color-mix(in srgb,var(--fg) 14%,var(--bg))}${BASE}${css}
 ${fxCss(c)}</style>
 </head>
-<body>
+<body${c.skin === 'line' ? ' class="sk-line"' : ''}>
 ${fxHtml(c)}${body}
 ${hasGal ? '<dialog id="lb" aria-label="이미지 크게 보기"><img alt=""><button type="button">닫기</button></dialog>' : ''}
 ${cfg ? `<script type="application/json" id="cfg">${cfg}</script>` : ''}${js ? `<script>${js}</script>` : ''}

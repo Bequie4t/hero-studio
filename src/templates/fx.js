@@ -3,13 +3,14 @@ import { esc, safeUrl } from './util.js'
 // Atmosphere layer shared by the Korean templates: star field, film grain, vignette, scroll reveal,
 // cursor sparkles and a background-music button. Everything is opt-in and off for visitors who
 // prefer reduced motion.
-export const fxDefaults = { fxStars: false, fxGrain: false, fxVignette: false, fxReveal: true, fxCursor: false, bgmUrl: '', bgmTitle: '' }
+export const fxDefaults = { skin: 'soft', fxStars: false, fxGrain: false, fxVignette: false, fxReveal: true, fxCursor: false, bgmUrl: '', bgmTitle: '' }
 
-export const fxOf = (p) => Object.fromEntries(['fxStars', 'fxGrain', 'fxVignette', 'fxCursor'].filter((k) => k in p).map((k) => [k, p[k]]))
+export const fxOf = (p) => Object.fromEntries(['skin', 'fxStars', 'fxGrain', 'fxVignette', 'fxCursor'].filter((k) => k in p).map((k) => [k, p[k]]))
 
 export const fxGroup = {
   group: '분위기 효과',
   items: [
+    { key: 'skin', label: '카드 스타일', type: 'choice', options: [{ id: 'soft', label: '포근한 카드' }, { id: 'line', label: '시네마틱 라인' }] },
     { key: 'fxReveal', label: '스크롤하면 부드럽게 나타나기', type: 'check' },
     { key: 'fxStars', label: '반짝이는 별무리 배경', type: 'check' },
     { key: 'fxGrain', label: '필름 입자 질감', type: 'check' },
@@ -22,7 +23,42 @@ export const fxGroup = {
 
 const NOISE = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0"/></filter><rect width="160" height="160" filter="url(#n)"/></svg>')
 
+
+const BR = 'linear-gradient(var(--accent),var(--accent))'
+const brackets = (n) => [`top left`, `top right`, `bottom left`, `bottom right`].map((pos) => `${BR} ${pos}/${n}px 1px no-repeat,${BR} ${pos}/1px ${n}px no-repeat`).join(',')
+const LINE = `
+.sk-line{font-weight:300}
+.sk-line h1,.sk-line h2,.sk-line h3{font-weight:400!important;letter-spacing:-.04em}
+.sk-line .card,.sk-line .who,.sk-line .tc,.sk-line .profile,.sk-line .price,.sk-line .q,.sk-line .win,.sk-line .box,.sk-line .notice,.sk-line .state,.sk-line .est,.sk-line .cv,.sk-line .open,.sk-line dialog.pf{border-radius:2px!important;border:1px solid color-mix(in srgb,var(--fg) 16%,transparent)!important;box-shadow:none!important;background-color:color-mix(in srgb,var(--card) 55%,transparent);background-image:${brackets(10)};transition:border-color .5s}
+.sk-line dl>div,.sk-line .rel li,.sk-line .anni li,.sk-line .board li,.sk-line .steps li,.sk-line .sched li,.sk-line .opts li,.sk-line .people li,.sk-line .rulelist li,.sk-line pre{border-radius:2px!important;border:1px solid color-mix(in srgb,var(--fg) 14%,transparent)!important;box-shadow:none!important;background-color:color-mix(in srgb,var(--card) 50%,transparent)}
+.sk-line .rel li{border-left:3px solid var(--accent)!important}
+.sk-line .card:hover,.sk-line .who:hover,.sk-line .open:hover{border-color:color-mix(in srgb,var(--accent) 60%,transparent)!important;transform:none}
+.sk-line .profile{transform:none}.sk-line .profile::before{display:none}
+.sk-line .sec h2,.sk-line h2{display:flex;align-items:center;gap:14px}
+.sk-line .sec h2::before,.sk-line h2::before{content:"\\25C7";background:none;color:var(--accent);padding:0;border-radius:0;transform:none;font:300 14px var(--body);letter-spacing:0;width:auto;height:auto;clip-path:none}
+.sk-line .sec h2::after,.sk-line h2::after{height:1px;background:linear-gradient(90deg,color-mix(in srgb,var(--fg) 30%,transparent),transparent)}
+.sk-line .eyebrow{background:none!important;border:0!important;padding:0!important;color:color-mix(in srgb,var(--fg) 62%,transparent)!important;font-weight:300!important;letter-spacing:.34em!important}
+.sk-line .eyebrow::before{content:"\\25C7  "}
+.sk-line .eyebrow span{background:none!important;color:inherit!important;padding:0!important}
+.sk-line .btn,.sk-line .links a,.sk-line .apply button,.sk-line .tools .kw,.sk-line .meta span,.sk-line .jump a,.sk-line .mini a,.sk-line .stats{background:none!important;color:var(--fg)!important;border:1px solid color-mix(in srgb,var(--fg) 38%,transparent)!important;border-radius:0!important;box-shadow:none!important;letter-spacing:.08em;font-weight:400}
+.sk-line .btn:hover,.sk-line .links a:hover{border-color:var(--accent)!important;color:var(--accent)!important}
+.sk-line .chips li,.sk-line .kw li,.sk-line .tg li,.sk-line .fkw li,.sk-line .pill,.sk-line .ev em,.sk-line .no,.sk-line .badge{border-radius:1px!important;background:none!important;border:1px solid color-mix(in srgb,var(--fg) 28%,transparent)!important;color:color-mix(in srgb,var(--fg) 80%,transparent)!important;box-shadow:none!important;font-weight:400}
+.sk-line .tools .kw.on,.sk-line .chips .kw.on{border-color:var(--accent)!important;color:var(--accent)!important}
+.sk-line .pic,.sk-line .av{border-radius:0!important;outline:0!important;border:1px solid color-mix(in srgb,var(--fg) 24%,transparent)!important;box-shadow:none!important}
+.sk-line .av{border-radius:50%!important}
+.sk-line .era h2{background:none!important;color:var(--fg)!important;border-top:1px solid color-mix(in srgb,var(--fg) 30%,transparent);border-bottom:1px solid color-mix(in srgb,var(--fg) 14%,transparent);border-radius:0;padding:14px 4px}
+.sk-line .era h2::after{display:none}
+.sk-line .stat .bar,.sk-line .prog,.sk-line .goal div{border-radius:0!important;border:0!important;height:3px!important;background:color-mix(in srgb,var(--fg) 14%,transparent)!important}
+.sk-line .stat .bar::after{display:none}
+.sk-line .stat .bar i,.sk-line .prog i,.sk-line .goal i{border-radius:0!important;background:var(--accent)!important}
+.sk-line header h1,.sk-line .hero h1{background:none!important;-webkit-text-fill-color:currentColor;color:var(--fg)!important}
+.sk-line .wm{-webkit-text-stroke:1px color-mix(in srgb,var(--fg) 14%,transparent)}
+.sk-line .cap{background:linear-gradient(transparent,rgba(5,6,10,.78))!important}
+.sk-line .heart{filter:saturate(.7)}
+`
+
 export function fxCss(c) {
+  const lineSkin = c.skin === 'line'
   const on = (k) => c[k] === true
   const out = []
   if (on('fxStars') || on('fxGrain') || on('fxVignette') || c.bgmUrl) out.push('.page,.wrap,header,main,footer{position:relative;z-index:2}')
@@ -44,6 +80,7 @@ export function fxCss(c) {
 .bgm .eq i{width:2px;height:100%;background:var(--accent);transform-origin:50% 100%;transform:scaleY(.25)}
 .bgm.on .eq i{animation:fxe 1.1s ease-in-out infinite alternate}.bgm.on .eq i:nth-child(2){animation-delay:-.4s}.bgm.on .eq i:nth-child(3){animation-delay:-.8s}
 @keyframes fxe{from{transform:scaleY(.25)}to{transform:scaleY(1)}}`)
+  if (lineSkin) out.push(LINE)
   out.push('@media(prefers-reduced-motion:reduce){.fxgrain,.fxsp,.bgm .rg::after,.bgm .eq i{animation:none!important}html.rvon .rvt{opacity:1;transform:none;filter:none;transition:none}}')
   return out.join('\n')
 }

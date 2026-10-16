@@ -6,7 +6,7 @@ import { fxDefaults, fxGroup, fxOf } from './fx.js'
 const PALETTES = [
   { id: 'sky', label: '파스텔 하늘', bg: '#eef6ff', card: '#ffffff', fg: '#1c2b3f', accent: '#4a90e2', accent2: '#ffd9e8' },
   { id: 'kraft', label: '크래프트 종이', bg: '#f4ead8', card: '#fffaf0', fg: '#3a2c18', accent: '#a8652a', accent2: '#e8cf9b' },
-  { id: 'ink', label: '밤 잉크', bg: '#12131a', card: '#1c1e29', fg: '#ecebf5', accent: '#7ee0c3', accent2: '#3a3f66', fxStars: true, fxGrain: true, fxVignette: true },
+  { id: 'ink', label: '밤 잉크', bg: '#12131a', card: '#1c1e29', fg: '#ecebf5', accent: '#7ee0c3', accent2: '#3a3f66', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'berry', label: '딸기우유', bg: '#fff0f3', card: '#ffffff', fg: '#3a1a24', accent: '#ff5c8a', accent2: '#ffd6e2' },
 ]
 

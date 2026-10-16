@@ -4,7 +4,7 @@ import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 세계관 연표 — era headers ("# "), timeline events with tags (filterable), factions and a glossary.
 const PALETTES = [
-  { id: 'starlit', label: '별빛 남색', bg: '#0c1330', card: '#162049', fg: '#e8ecff', accent: '#ffd479', accent2: '#3a4a9a', fxStars: true, fxGrain: true, fxVignette: true },
+  { id: 'starlit', label: '별빛 남색', bg: '#0c1330', card: '#162049', fg: '#e8ecff', accent: '#ffd479', accent2: '#3a4a9a', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'parchment', label: '고서 양피지', bg: '#f1e7d0', card: '#faf3e0', fg: '#34281a', accent: '#8c4a1f', accent2: '#d9b36a' },
   { id: 'moss', label: '이끼 숲', bg: '#eaf2e4', card: '#f7fbf3', fg: '#1f3220', accent: '#3f7d4a', accent2: '#bfdca8' },
   { id: 'seal', label: '먹과 붉은 인장', bg: '#f3f0ea', card: '#ffffff', fg: '#17171b', accent: '#c0302f', accent2: '#e2d6c3' },

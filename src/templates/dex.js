@@ -7,7 +7,7 @@ const PALETTES = [
   { id: 'cream', label: '도감 크림', bg: '#f6efe3', card: '#fffaf1', fg: '#33281c', accent: '#b4532a', accent2: '#e9c46a' },
   { id: 'deep', label: '심해 청록', bg: '#0b1c22', card: '#12303a', fg: '#e3f4f4', accent: '#4fd1c5', accent2: '#2b6f7a', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'sunset', label: '석양', bg: '#fff1ea', card: '#ffffff', fg: '#3b1f1a', accent: '#ff7a59', accent2: '#ffd1bf' },
-  { id: 'obsidian', label: '흑요석', bg: '#101014', card: '#1b1b22', fg: '#eeeaf4', accent: '#c9a3ff', accent2: '#47346b', fxStars: true, fxGrain: true, fxVignette: true },
+  { id: 'obsidian', label: '흑요석', bg: '#101014', card: '#1b1b22', fg: '#eeeaf4', accent: '#c9a3ff', accent2: '#47346b', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
 ]
 
 const defaults = {

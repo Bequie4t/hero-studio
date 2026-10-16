@@ -6,10 +6,10 @@ import { fxDefaults, fxGroup, fxOf } from './fx.js'
 // profile table, stat bars, quote, relations and a gallery.
 const PALETTES = [
   { id: 'sakura', label: '벚꽃 크림', bg: '#fff5f6', card: '#ffffff', fg: '#3b2a30', accent: '#e8648b', accent2: '#f7c6d3' },
-  { id: 'dawn', label: '새벽 라벤더', bg: '#1b1830', card: '#26223f', fg: '#ece8ff', accent: '#a78bfa', accent2: '#4a3f8f', fxStars: true, fxGrain: true, fxVignette: true },
+  { id: 'dawn', label: '새벽 라벤더', bg: '#1b1830', card: '#26223f', fg: '#ece8ff', accent: '#a78bfa', accent2: '#4a3f8f', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'mint', label: '민트 소다', bg: '#effaf6', card: '#ffffff', fg: '#1f3a34', accent: '#2fb89a', accent2: '#bfeede' },
-  { id: 'gothic', label: '고딕 블랙레드', bg: '#0e0b0c', card: '#1a1315', fg: '#f2e9e9', accent: '#d6354f', accent2: '#5b1823', fxStars: true, fxGrain: true, fxVignette: true },
-  { id: 'film', label: '달빛 필름', bg: '#0c0d10', card: '#16181d', fg: '#eceae4', accent: '#d8c7a0', accent2: '#3a3a40', fxGrain: true, fxVignette: true, fxStars: true },
+  { id: 'gothic', label: '고딕 블랙레드', bg: '#0e0b0c', card: '#1a1315', fg: '#f2e9e9', accent: '#d6354f', accent2: '#5b1823', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
+  { id: 'film', label: '달빛 필름', bg: '#0c0d10', card: '#16181d', fg: '#eceae4', accent: '#d8c7a0', accent2: '#3a3a40', fxGrain: true, fxVignette: true, fxStars: true, skin: 'line' },
 ]
 
 const defaults = {

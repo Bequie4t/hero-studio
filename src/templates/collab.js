@@ -6,7 +6,7 @@ import { fxDefaults, fxGroup, fxOf } from './fx.js'
 const PALETTES = [
   { id: 'soda', label: '여름 소다', bg: '#e9f8ff', card: '#ffffff', fg: '#10303d', accent: '#13a3d6', accent2: '#ffe27a' },
   { id: 'maple', label: '가을 단풍', bg: '#fff1e4', card: '#fffaf3', fg: '#3a1d10', accent: '#d9531e', accent2: '#f3c777' },
-  { id: 'winter', label: '겨울 밤', bg: '#0e1429', card: '#18203d', fg: '#e8edff', accent: '#8fb5ff', accent2: '#3b4a85', fxStars: true, fxGrain: true, fxVignette: true },
+  { id: 'winter', label: '겨울 밤', bg: '#0e1429', card: '#18203d', fg: '#e8edff', accent: '#8fb5ff', accent2: '#3b4a85', fxStars: true, fxGrain: true, fxVignette: true, skin: 'line' },
   { id: 'spring', label: '봄 벚꽃', bg: '#fff3f6', card: '#ffffff', fg: '#3c1f2a', accent: '#f0608a', accent2: '#ffd3e0' },
 ]
 
@@ -160,7 +160,7 @@ ul.sched{position:relative;padding-left:28px}
 .count{display:inline-block;margin-left:10px;font:800 15px var(--body);padding:2px 12px;border-radius:99px;background:var(--accent2);color:var(--fg);vertical-align:middle}
 `
   const body = `<div class="page">
-  <header class="hero${banner ? ' has-img' : ''}">
+  <header class="hero cv${banner ? ' has-img' : ''}">
     ${banner ? `<img class="bn" src="${banner}" alt="">` : ''}
     <span class="badge${c.open ? '' : ' closed'}">${c.open ? '모집 중' : '모집 마감'}</span>
     <h1>${esc(c.name)}</h1>

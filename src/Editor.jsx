@@ -125,6 +125,7 @@ export default function Editor({ template, shared }) {
   const pickPalette = (p) => setCfg((c) => {
     const { id, label, ...vals } = p
     const fxOff = Object.fromEntries(['fxStars', 'fxGrain', 'fxVignette', 'fxCursor'].filter((k) => k in c).map((k) => [k, false]))
+    if ('skin' in c) fxOff.skin = 'soft'
     return { ...c, ...fxOff, ...vals }
   })
 
