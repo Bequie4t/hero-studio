@@ -1,5 +1,5 @@
-import { cols, esc, imgSrc, initial, lines, multi, safeUrl } from './util.js'
-import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, shell, styleGroup } from './kobase.js'
+import { cols, esc, imgSrc, lines, multi, safeUrl } from './util.js'
+import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
 
 // Template: 커미션 안내 — status, price list, process, rules, copy-able request form, work board.
 const PALETTES = [
@@ -20,6 +20,7 @@ const defaults = {
   options: '캐릭터 추가 | +50%\n복잡한 배경 | +10,000원\n상업적 이용 | 별도 문의\n급행 작업 | +30%',
   steps: '아래 신청 양식을 복사해서 작성해요.\n신청 링크로 양식을 보내 주세요.\n작업 가능 여부와 입금 안내를 드려요.\n러프 확인 후 채색에 들어가요.\n완성본을 전달해 드려요.',
   rules: '캐릭터 설정 자료(레퍼런스)를 꼭 함께 보내 주세요.\n러프 확인 이후에는 큰 수정이 어려워요.\n타인의 저작물 캐릭터(2차 창작)는 받지 않아요.\n완성본은 개인 소장과 SNS 공개까지 가능해요. 재배포와 AI 학습 사용은 금지예요.\n작업 일정은 상황에 따라 조금 달라질 수 있어요.',
+  faq: '입금은 언제 하나요? | 작업 가능 여부를 안내드린 뒤에 입금해 주세요.\n수정은 몇 번까지 되나요? | 러프 단계에서 2회까지 무료예요.\n캐릭터가 여러 명이면요? | 캐릭터 추가 옵션이 붙어요.',
   applyLabel: '신청하러 가기',
   applyUrl: 'https://forms.gle/',
   form: '[커미션 신청 양식]\n닉네임:\n연락 방법:\n신청 종류:\n캐릭터 이름/설정 요약:\n레퍼런스 링크:\n원하는 분위기·포즈:\n희망 완성일:',
@@ -44,12 +45,15 @@ const fields = [
     { key: 'samples', label: '샘플 그림', type: 'images', max: 8, hint: '작업 예시를 최대 8장까지 보여 줘요.' },
   ] },
   { group: '가격표', open: true, items: [
-    { key: 'prices', label: '커미션 종류', type: 'textarea', rows: 6, hint: '한 줄에 하나: 종류 | 가격 | 설명 | 작업 기간 (최대 8개)' },
+    { key: 'prices', label: '커미션 종류', type: 'textarea', rows: 6, hint: '한 줄에 하나: 종류 | 가격 | 설명 | 작업 기간 (최대 8개). 가격에 숫자(예: 30,000원)가 있으면 견적 계산기가 동작해요.' },
     { key: 'options', label: '추가 옵션', type: 'textarea', rows: 4, hint: '한 줄에 하나: 항목 | 추가금 (최대 8개)' },
   ] },
   { group: '진행과 규칙', items: [
     { key: 'steps', label: '진행 과정', type: 'textarea', rows: 5, hint: '한 줄에 하나. 순서대로 번호가 붙어요.' },
     { key: 'rules', label: '주의사항', type: 'textarea', rows: 6, hint: '한 줄에 하나' },
+  ] },
+  { group: '자주 묻는 질문', items: [
+    { key: 'faq', label: '질문과 답', type: 'textarea', rows: 5, hint: '한 줄에 하나: 질문 | 답 (최대 8개)' },
   ] },
   { group: '신청', items: [
     { key: 'applyLabel', label: '신청 버튼 문구', type: 'text', half: true },
@@ -63,15 +67,49 @@ const fields = [
   styleGroup(['jua', 'blackhan', 'gowunbatang', 'nanumpen', 'galmuri', 'pretendard']),
 ]
 
+// Price text -> { n } (won) or { pct }; anything else is a free-form note.
+const num = (t) => { const m = String(t || '').replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(만)?\s*원?/); return m ? Math.round(+m[1] * (m[2] ? 10000 : 1)) : null }
+const pct = (t) => { const m = String(t || '').match(/([+-]?\d+(?:\.\d+)?)\s*%/); return m ? +m[1] : null }
+
 const RUNTIME = String.raw`
 (function () {
+  var types = [].slice.call(document.querySelectorAll('input[name=ty]')), opts = [].slice.call(document.querySelectorAll('input[name=op]'));
+  var out = document.getElementById('total'), note = document.getElementById('estnote');
   var b = document.getElementById('copyform'), t = document.getElementById('formtext');
-  if (!b || !t) return;
-  function say(m) { b.textContent = m; setTimeout(function () { b.textContent = '신청 양식 복사'; }, 2000); }
-  b.addEventListener('click', function () {
-    if (navigator.clipboard) navigator.clipboard.writeText(t.textContent).then(function () { say('복사했어요'); }, function () { say('직접 선택해서 복사해 주세요'); });
-    else say('직접 선택해서 복사해 주세요');
-  });
+  function pick() { return types.filter(function (x) { return x.checked; })[0]; }
+  function won(n) { return n.toLocaleString('ko-KR') + '원'; }
+  function summary() {
+    var ty = pick(); if (!ty) return '';
+    var lines = ['[견적] ' + ty.dataset.name + (ty.dataset.price ? ' ' + won(+ty.dataset.price) : '')];
+    opts.forEach(function (o) { if (o.checked) lines.push(' + ' + o.dataset.name); });
+    if (out && out.textContent) lines.push('예상 합계: ' + out.textContent);
+    return lines.join('\n');
+  }
+  function calc() {
+    var ty = pick(); if (!out) return;
+    if (!ty) { out.textContent = ''; note.textContent = '커미션 종류를 먼저 골라 주세요.'; return; }
+    var base = +ty.dataset.price, sum = base, extra = [];
+    if (!base) { out.textContent = ''; note.textContent = '가격이 정해져 있지 않아 직접 문의가 필요해요.'; return; }
+    opts.forEach(function (o) {
+      if (!o.checked) return;
+      if (o.dataset.pct) sum += base * (+o.dataset.pct / 100);
+      else if (o.dataset.add) sum += +o.dataset.add;
+      else extra.push(o.dataset.name);
+    });
+    out.textContent = won(Math.round(sum));
+    note.textContent = extra.length ? extra.join(', ') + '은(는) 별도 문의예요.' : '실제 금액은 작가와 상담 후 확정돼요.';
+  }
+  types.concat(opts).forEach(function (x) { x.addEventListener('change', calc); });
+  calc();
+  if (b && t) {
+    function say(m) { b.textContent = m; setTimeout(function () { b.textContent = '신청 양식 복사'; }, 2000); }
+    b.addEventListener('click', function () {
+      var text = t.textContent, s = summary();
+      if (s) text = text + '\n\n' + s;
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { say(s ? '견적과 함께 복사했어요' : '복사했어요'); }, function () { say('직접 선택해서 복사해 주세요'); });
+      else say('직접 선택해서 복사해 주세요');
+    });
+  }
 })();
 `
 
@@ -82,12 +120,14 @@ function build(input, { fontCss } = {}) {
   const opts = lines(c.options, 8).map(cols)
   const steps = lines(c.steps, 10), rules = lines(c.rules, 12)
   const board = lines(c.board, 12).map(cols)
+  const faq = lines(c.faq, 8).map(cols)
+  const est = prices.length > 0 && prices.some(([, p]) => num(p))
   const stCls = (s) => (/완료/.test(s) ? 'done' : /작업|진행/.test(s) ? 'wip' : 'wait')
   const css = `
 .top{display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,3vw,32px);align-items:center}
 .av{width:clamp(96px,16vw,150px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--accent2);position:relative;border:4px solid var(--card);outline:2px solid var(--accent)}
 .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.av span{position:absolute;inset:0;display:grid;place-items:center;font:700 56px/1 var(--display);color:var(--accent)}
+.av .ph b{font-size:56px}
 .top h1{margin:0;font:400 clamp(34px,6vw,64px)/1.1 var(--display)}
 .top p{margin:6px 0 0;color:var(--dim);max-width:52ch}
 .state{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:clamp(20px,3vw,32px);padding:14px 22px;border-radius:20px;background:var(--card);border:2px solid var(--accent)}
@@ -95,7 +135,16 @@ function build(input, { fontCss } = {}) {
 .state.closed{border-color:var(--line)}.state.closed b{background:var(--dim)}
 .state b::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--bg)}
 .prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
-.price{padding:20px;display:flex;flex-direction:column;gap:6px}
+.price{padding:20px;display:flex;flex-direction:column;gap:6px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s}
+.price input{position:absolute;opacity:0;pointer-events:none}
+.price:has(input:checked){border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.price:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:3px}
+.price:has(input:checked)::after{content:"선택됨";position:absolute;top:14px;right:16px;font-size:12px;font-weight:800;color:var(--bg);background:var(--accent);padding:1px 10px;border-radius:99px}
+.est{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;margin-top:16px;padding:16px 22px;border:2px solid var(--accent)}
+.est small{display:block;color:var(--dim);font-size:13px}
+.est strong{font:800 clamp(26px,4vw,34px)/1.1 var(--display);color:var(--accent)}
+.est p{margin:0;color:var(--dim);font-size:14px}
+.opts label{cursor:pointer}.opts input{accent-color:var(--accent)}
 .price h3{margin:0;font:400 22px/1.2 var(--display)}
 .price strong{font:800 24px/1.1 var(--body);color:var(--accent)}
 .price p{margin:0;color:var(--dim);font-size:14.5px}
@@ -118,18 +167,19 @@ pre{margin:16px 0 0;padding:16px 20px;border-radius:16px;background:var(--card);
 @media(max-width:560px){.top{grid-template-columns:1fr;text-align:center;justify-items:center}}
 `
   const body = `<div class="page">
-  <header class="top"><div class="av">${avatar ? `<img src="${avatar}" alt="${esc(c.name)} 프로필 이미지">` : `<span aria-hidden="true">${esc(initial(c.name))}</span>`}</div><div><h1>${esc(c.name)}</h1>${c.bio ? `<p>${multi(c.bio)}</p>` : ''}</div></header>
+  <header class="top"><div class="av">${avatar ? `<img src="${avatar}" alt="${esc(c.name)} 프로필 이미지">` : phHtml(c.name)}</div><div><h1>${esc(c.name)}</h1>${c.bio ? `<p>${multi(c.bio)}</p>` : ''}</div></header>
   <div class="state${c.open ? '' : ' closed'}"><b>${c.open ? '커미션 오픈' : '커미션 마감'}</b>${c.statusText ? `<span>${esc(c.statusText)}</span>` : ''}</div>
   ${galleryHtml(c.samples, `${c.name} 샘플`, '샘플')}
-  ${prices.length ? `<section class="sec" id="prices"><h2>커미션 종류와 가격</h2><div class="prices">${prices.map(([k, p, d, t]) => `<article class="price card"><h3>${esc(k)}</h3><strong>${esc(p || '')}</strong>${d ? `<p>${esc(d)}</p>` : ''}${t ? `<small>작업 기간 ${esc(t)}</small>` : ''}</article>`).join('')}</div>${opts.length ? `<ul class="opts">${opts.map(([k, v]) => `<li><span>${esc(k)}</span><b>${esc(v || '')}</b></li>`).join('')}</ul>` : ''}</section>` : ''}
+  ${prices.length ? `<section class="sec" id="prices"><h2>커미션 종류와 가격</h2><div class="prices">${prices.map(([k, p, d, t]) => `<label class="price card"><input type="radio" name="ty" data-name="${esc(k)}" data-price="${num(p) || ''}"><h3>${esc(k)}</h3><strong>${esc(p || '')}</strong>${d ? `<p>${esc(d)}</p>` : ''}${t ? `<small>작업 기간 ${esc(t)}</small>` : ''}</label>`).join('')}</div>${opts.length ? `<ul class="opts">${opts.map(([k, v]) => `<li><label><input type="checkbox" name="op" data-name="${esc(k)}"${pct(v) !== null ? ` data-pct="${pct(v)}"` : num(v) ? ` data-add="${num(v)}"` : ''}> ${esc(k)}</label><b>${esc(v || '')}</b></li>`).join('')}</ul>` : ''}${est ? '<div class="est card"><div><small>선택한 견적</small><strong id="total" aria-live="polite"></strong></div><p id="estnote"></p></div>' : ''}</section>` : ''}
   ${steps.length ? `<section class="sec" id="steps"><h2>진행 과정</h2><ol class="steps">${steps.map((s) => `<li class="card">${esc(s)}</li>`).join('')}</ol></section>` : ''}
   ${rules.length ? `<section class="sec" id="rules"><h2>꼭 읽어 주세요</h2><ul class="rules">${rules.map((r) => `<li>${esc(r)}</li>`).join('')}</ul></section>` : ''}
   <section class="sec" id="apply"><h2>신청하기</h2><div class="apply"><a class="btn" href="${esc(safeUrl(c.applyUrl))}" target="_blank" rel="noopener noreferrer">${esc(c.applyLabel)}</a>${c.form ? '<button type="button" id="copyform">신청 양식 복사</button>' : ''}</div>${c.form ? `<pre id="formtext">${esc(c.form)}</pre>` : ''}</section>
+  ${faq.length ? `<section class="sec" id="faq"><h2>자주 묻는 질문</h2>${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a || '')}</p></details>`).join('')}</section>` : ''}
   ${board.length ? `<section class="sec" id="board"><h2>작업 현황</h2><ul class="board">${board.map(([n, s]) => `<li class="card"><span>${esc(n)}</span><span class="pill ${stCls(s || '')}">${esc(s || '대기')}</span></li>`).join('')}</ul></section>` : ''}
   ${noticeHtml(c)}
   ${footerHtml(c, c.name)}
 </div>`
-  return shell({ c, d: PALETTES[0], title: `${c.name} — 커미션 안내`, desc: c.bio, fontCss, css, body, script: c.form ? RUNTIME : '' })
+  return shell({ c, d: PALETTES[0], title: `${c.name} — 커미션 안내`, desc: c.bio, fontCss, css, body, script: c.form || est ? RUNTIME : '' })
 }
 
 export default {

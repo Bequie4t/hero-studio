@@ -21,6 +21,7 @@ const defaults = {
   steps: '신청 폼에서 닉네임과 참여 분야를 적어요.\n확정 안내를 받으면 디스코드 합작 채널에 입장해요.\n러프나 초안을 공유하고 서로 응원해요.\n마감일까지 완성본을 제출해요.\n공개일에 함께 합작집을 공개해요.',
   schedule: '2026-11-01 | 참가 신청 시작\n2026-11-20 | 참가 확정 안내\n2026-12-10 | 러프·초안 공유\n2026-12-20 | 완성본 마감\n2027-01-05 | 합작집 공개',
   perks: '합작집 공개 페이지에 이름과 작품이 실려요.\n참여자 전원에게 합작 기념 배경화면을 드려요.\n참여 인증 배지를 프로필에 쓸 수 있어요.',
+  goal: '8',
   people: '별조각 | 일러스트\n하늘 | 글\n민트 | 만화\n오렌지 | 굿즈 디자인',
   applyLabel: '참가 신청하기',
   applyUrl: 'https://forms.gle/',
@@ -52,6 +53,7 @@ const fields = [
     { key: 'schedule', label: '일정', type: 'textarea', rows: 5, hint: '한 줄에 하나: 날짜 | 내용 (최대 10개)' },
   ] },
   { group: '참가자', items: [
+    { key: 'goal', label: '목표 인원', type: 'text', half: true, hint: '숫자만. 비우면 진행 막대를 숨겨요.' },
     { key: 'people', label: '참가자 목록', type: 'textarea', rows: 6, hint: '한 줄에 하나: 닉네임 | 분야 (최대 40명). 위에 인원수가 자동으로 표시돼요.' },
   ] },
   { group: '신청과 질문', items: [
@@ -89,6 +91,7 @@ function build(input, { fontCss } = {}) {
   const roles = String(c.roles || '').split('/').map((s) => s.trim()).filter(Boolean)
   const conds = lines(c.conditions, 10), perks = lines(c.perks, 8), steps = lines(c.steps, 10)
   const sched = lines(c.schedule, 10).map(cols), people = lines(c.people, 40).map(cols), faq = lines(c.faq, 8).map(cols)
+  const goalN = Math.max(0, Math.min(500, parseInt(c.goal, 10) || 0))
   const paras = String(c.intro || '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
   const css = `
 .hero{position:relative;overflow:hidden;isolation:isolate;border-radius:32px;padding:clamp(32px,6vw,72px) clamp(20px,5vw,56px);text-align:center;background:var(--card);border:1.5px solid var(--line)}
@@ -119,6 +122,8 @@ function build(input, { fontCss } = {}) {
 .people{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:10px}
 .people li{padding:10px 16px;display:flex;flex-direction:column;line-height:1.4}
 .people b{font-size:16px}.people span{font-size:13px;color:var(--dim)}
+.goal{margin:0 0 16px;max-width:520px}.goal div{height:12px;border-radius:99px;background:color-mix(in srgb,var(--fg) 12%,var(--card));overflow:hidden}.goal i{display:block;height:100%;border-radius:99px;background:var(--accent)}.goal p{margin:6px 0 0;font-size:14px;color:var(--dim)}
+.g0{width:0%}.g5{width:5%}.g10{width:10%}.g15{width:15%}.g20{width:20%}.g25{width:25%}.g30{width:30%}.g35{width:35%}.g40{width:40%}.g45{width:45%}.g50{width:50%}.g55{width:55%}.g60{width:60%}.g65{width:65%}.g70{width:70%}.g75{width:75%}.g80{width:80%}.g85{width:85%}.g90{width:90%}.g95{width:95%}.g100{width:100%}
 .count{display:inline-block;margin-left:10px;font:800 15px var(--body);padding:2px 12px;border-radius:99px;background:var(--accent2);color:var(--fg);vertical-align:middle}
 `
   const body = `<div class="page">
@@ -134,7 +139,7 @@ function build(input, { fontCss } = {}) {
   ${conds.length || perks.length ? `<section class="sec two" id="rules">${conds.length ? `<div><h2>참여 조건</h2><ul class="rulelist">${conds.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}${perks.length ? `<div><h2>참여 혜택</h2><ul class="rulelist">${perks.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}</section>` : ''}
   ${steps.length ? `<section class="sec" id="steps"><h2>참여 방법</h2><ol class="steps">${steps.map((s) => `<li class="card">${esc(s)}</li>`).join('')}</ol></section>` : ''}
   ${sched.length ? `<section class="sec" id="schedule"><h2>일정</h2><ul class="sched">${sched.map(([d, t]) => `<li class="card"><time>${esc(d)}</time><span>${esc(t || '')}</span></li>`).join('')}</ul></section>` : ''}
-  ${people.length ? `<section class="sec" id="people"><h2>참가자<span class="count">${people.length}명</span></h2><ul class="people">${people.map(([n, r]) => `<li class="card"><b>${esc(n)}</b>${r ? `<span>${esc(r)}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
+  ${people.length ? `<section class="sec" id="people"><h2>참가자<span class="count">${people.length}명</span></h2>${goalN ? `<div class="goal"><div><i class="g${Math.round(Math.min(100, people.length / goalN * 100) / 5) * 5}"></i></div><p>${people.length} / ${goalN}명${people.length >= goalN ? ' · 목표 달성!' : ` · ${goalN - people.length}자리 남았어요`}</p></div>` : ''}<ul class="people">${people.map(([n, r]) => `<li class="card"><b>${esc(n)}</b>${r ? `<span>${esc(r)}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
   ${faq.length ? `<section class="sec" id="faq"><h2>자주 묻는 질문</h2>${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a || '')}</p></details>`).join('')}</section>` : ''}
   ${noticeHtml(c)}
   ${footerHtml(c, c.name)}
