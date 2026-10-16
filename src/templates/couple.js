@@ -1,13 +1,15 @@
 import { cols, esc, hex, imgSrc, jsonForScript, lines, multi, ymd } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
+import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 자캐 커플 아카이브 — two characters with their own colours, a D+ counter with progress to the next
 // milestone, an automatic anniversary list, timeline, Q&A and gallery.
 const PALETTES = [
   { id: 'rose', label: '로즈 밀크', bg: '#fff3f0', card: '#ffffff', fg: '#3a2226', accent: '#e5566d', accent2: '#ffd5cf' },
-  { id: 'night', label: '별밤', bg: '#0f1230', card: '#1a1e47', fg: '#eef0ff', accent: '#ffc857', accent2: '#4651c7' },
+  { id: 'night', label: '별밤', bg: '#0f1230', card: '#1a1e47', fg: '#eef0ff', accent: '#ffc857', accent2: '#4651c7', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'soda', label: '소다 블루', bg: '#eef7ff', card: '#ffffff', fg: '#1b2a3d', accent: '#3b8df0', accent2: '#ffd1e6' },
-  { id: 'wine', label: '와인', bg: '#1c0d14', card: '#2a1520', fg: '#f6e8ee', accent: '#e0587a', accent2: '#7a1f3d' },
+  { id: 'wine', label: '와인', bg: '#1c0d14', card: '#2a1520', fg: '#f6e8ee', accent: '#e0587a', accent2: '#7a1f3d', fxStars: true, fxGrain: true, fxVignette: true },
+  { id: 'two', label: '새벽 두 시', bg: '#140f1f', card: '#211832', fg: '#f3ecff', accent: '#ff8fb1', accent2: '#6a4bb5', fxStars: true, fxCursor: true, fxGrain: true },
 ]
 
 const defaults = {
@@ -33,6 +35,8 @@ const defaults = {
   notice: '두 캐릭터는 제작자의 오리지널 캐릭터(자캐)입니다. 무단 도용과 AI 학습 사용을 금지합니다.',
   links: '트위터(X) | https://twitter.com/\n포스타입 | https://www.postype.com/',
   ...paletteColors(PALETTES[0]),
+  ...fxDefaults,
+  ...fxOf(PALETTES[0]),
   displayFont: 'gowunbatang',
   bodyFont: 'pretendard',
 }
@@ -68,6 +72,7 @@ const fields = [
   ] },
   footerGroup,
   (() => { const g = styleGroup(); g.items.splice(3, 0, { type: 'colors', keys: [['colorA', '첫 번째 캐릭터 색'], ['colorB', '두 번째 캐릭터 색']] }); return g })(),
+  fxGroup,
 ]
 
 const RUNTIME = String.raw`

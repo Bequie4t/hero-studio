@@ -1,11 +1,12 @@
 import { cols, esc, imgSrc, initial, jsonForScript, lines, list, multi, safeUrl } from './util.js'
 import { footerGroup, footerHtml, fontsOf, noticeHtml, paletteColors, shell, styleGroup, whenKo } from './kobase.js'
+import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 합작·이벤트 모집 — recruiting page with a deadline countdown, schedule, roles, rules and a participant list.
 const PALETTES = [
   { id: 'soda', label: '여름 소다', bg: '#e9f8ff', card: '#ffffff', fg: '#10303d', accent: '#13a3d6', accent2: '#ffe27a' },
   { id: 'maple', label: '가을 단풍', bg: '#fff1e4', card: '#fffaf3', fg: '#3a1d10', accent: '#d9531e', accent2: '#f3c777' },
-  { id: 'winter', label: '겨울 밤', bg: '#0e1429', card: '#18203d', fg: '#e8edff', accent: '#8fb5ff', accent2: '#3b4a85' },
+  { id: 'winter', label: '겨울 밤', bg: '#0e1429', card: '#18203d', fg: '#e8edff', accent: '#8fb5ff', accent2: '#3b4a85', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'spring', label: '봄 벚꽃', bg: '#fff3f6', card: '#ffffff', fg: '#3c1f2a', accent: '#f0608a', accent2: '#ffd3e0' },
 ]
 
@@ -30,6 +31,8 @@ const defaults = {
   notice: '제출된 작품의 저작권은 각 작가에게 있어요. 합작집에는 허락받은 작품만 실립니다.',
   links: '디스코드 | https://discord.com/\n트위터(X) | https://twitter.com/',
   ...paletteColors(PALETTES[0]),
+  ...fxDefaults,
+  ...fxOf(PALETTES[0]),
   displayFont: 'jua',
   bodyFont: 'pretendard',
 }
@@ -63,6 +66,7 @@ const fields = [
   ] },
   footerGroup,
   styleGroup(),
+  fxGroup,
 ]
 
 const RUNTIME = String.raw`

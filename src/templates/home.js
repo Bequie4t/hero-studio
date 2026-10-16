@@ -1,11 +1,12 @@
 import { koOptions } from '../fonts/ko-registry.js'
 import { cols, esc, imgSrc, imgs, jsonForScript, lines, multi, safeUrl, ymd } from './util.js'
 import { fontsOf, galleryHtml, phHtml, shell } from './kobase.js'
+import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 덕질 홈 — a retro "window" personal homepage (profile, links, favourites, notes).
 const PALETTES = [
   { id: 'candy', label: '캔디 팝', bg: '#ffe4f1', card: '#ffffff', fg: '#3a1b2e', accent: '#ff5ca8', accent2: '#7fd6ff' },
-  { id: 'y2k', label: '사이버 Y2K', bg: '#0c1030', card: '#161b4a', fg: '#e8f0ff', accent: '#39ffd0', accent2: '#ff4fd8' },
+  { id: 'y2k', label: '사이버 Y2K', bg: '#0c1030', card: '#161b4a', fg: '#e8f0ff', accent: '#39ffd0', accent2: '#ff4fd8', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'lemon', label: '레몬 소다', bg: '#fff9d6', card: '#ffffff', fg: '#3a2f08', accent: '#ffb300', accent2: '#6fd3a8' },
   { id: 'ink', label: '먹물', bg: '#f1efe9', card: '#ffffff', fg: '#16151a', accent: '#16151a', accent2: '#e24a3b' },
 ]
@@ -37,6 +38,8 @@ const defaults = {
   bodyFont: 'pretendard',
   dots: true,
   stickers: true,
+  ...fxDefaults,
+  ...fxOf(PALETTES[0]),
 }
 
 const fields = [
@@ -80,6 +83,7 @@ const fields = [
     { key: 'dots', label: '배경 물방울 무늬', type: 'check' },
     { key: 'stickers', label: '반짝이 스티커 장식', type: 'check' },
   ] },
+  fxGroup,
 ]
 
 const RUNTIME = String.raw`

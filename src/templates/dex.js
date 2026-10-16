@@ -1,12 +1,13 @@
 import { cols, esc, hex, imgSrc, lines, multi } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
+import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 캐릭터 도감 — many characters in one place, grouped by faction (lines starting with "# ").
 const PALETTES = [
   { id: 'cream', label: '도감 크림', bg: '#f6efe3', card: '#fffaf1', fg: '#33281c', accent: '#b4532a', accent2: '#e9c46a' },
-  { id: 'deep', label: '심해 청록', bg: '#0b1c22', card: '#12303a', fg: '#e3f4f4', accent: '#4fd1c5', accent2: '#2b6f7a' },
+  { id: 'deep', label: '심해 청록', bg: '#0b1c22', card: '#12303a', fg: '#e3f4f4', accent: '#4fd1c5', accent2: '#2b6f7a', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'sunset', label: '석양', bg: '#fff1ea', card: '#ffffff', fg: '#3b1f1a', accent: '#ff7a59', accent2: '#ffd1bf' },
-  { id: 'obsidian', label: '흑요석', bg: '#101014', card: '#1b1b22', fg: '#eeeaf4', accent: '#c9a3ff', accent2: '#47346b' },
+  { id: 'obsidian', label: '흑요석', bg: '#101014', card: '#1b1b22', fg: '#eeeaf4', accent: '#c9a3ff', accent2: '#47346b', fxStars: true, fxGrain: true, fxVignette: true },
 ]
 
 const defaults = {
@@ -18,6 +19,8 @@ const defaults = {
   notice: '이 도감의 캐릭터는 모두 제작자의 오리지널 캐릭터(자캐)입니다. 무단 도용과 AI 학습 사용을 금지합니다.',
   links: '트위터(X) | https://twitter.com/\n포스타입 | https://www.postype.com/',
   ...paletteColors(PALETTES[0]),
+  ...fxDefaults,
+  ...fxOf(PALETTES[0]),
   displayFont: 'gowunbatang',
   bodyFont: 'pretendard',
 }
@@ -33,6 +36,7 @@ const fields = [
   ] },
   footerGroup,
   styleGroup(),
+  fxGroup,
 ]
 
 const RUNTIME = String.raw`

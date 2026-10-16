@@ -1,11 +1,12 @@
 import { cols, esc, imgSrc, lines, multi, safeUrl } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
+import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 커미션 안내 — status, price list, process, rules, copy-able request form, work board.
 const PALETTES = [
   { id: 'sky', label: '파스텔 하늘', bg: '#eef6ff', card: '#ffffff', fg: '#1c2b3f', accent: '#4a90e2', accent2: '#ffd9e8' },
   { id: 'kraft', label: '크래프트 종이', bg: '#f4ead8', card: '#fffaf0', fg: '#3a2c18', accent: '#a8652a', accent2: '#e8cf9b' },
-  { id: 'ink', label: '밤 잉크', bg: '#12131a', card: '#1c1e29', fg: '#ecebf5', accent: '#7ee0c3', accent2: '#3a3f66' },
+  { id: 'ink', label: '밤 잉크', bg: '#12131a', card: '#1c1e29', fg: '#ecebf5', accent: '#7ee0c3', accent2: '#3a3f66', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'berry', label: '딸기우유', bg: '#fff0f3', card: '#ffffff', fg: '#3a1a24', accent: '#ff5c8a', accent2: '#ffd6e2' },
 ]
 
@@ -31,6 +32,8 @@ const defaults = {
   notice: '신청 전 안내를 끝까지 읽어 주세요. 안내를 읽지 않아 생긴 문제는 도와드리기 어려워요.',
   links: '트위터(X) | https://twitter.com/\n포스타입 | https://www.postype.com/\n픽시브 | https://www.pixiv.net/',
   ...paletteColors(PALETTES[0]),
+  ...fxDefaults,
+  ...fxOf(PALETTES[0]),
   displayFont: 'jua',
   bodyFont: 'pretendard',
 }
@@ -69,6 +72,7 @@ const fields = [
   ] },
   footerGroup,
   styleGroup(['jua', 'blackhan', 'gowunbatang', 'nanumpen', 'galmuri', 'pretendard']),
+  fxGroup,
 ]
 
 // Price text -> { n } (won) or { pct }; anything else is a free-form note.

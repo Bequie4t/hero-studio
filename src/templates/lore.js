@@ -1,10 +1,11 @@
 import { cols, esc, initial, lines, multi } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, noticeHtml, paletteColors, shell, styleGroup } from './kobase.js'
+import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 세계관 연표 — era headers ("# "), timeline events with tags (filterable), factions and a glossary.
 const PALETTES = [
+  { id: 'starlit', label: '별빛 남색', bg: '#0c1330', card: '#162049', fg: '#e8ecff', accent: '#ffd479', accent2: '#3a4a9a', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'parchment', label: '고서 양피지', bg: '#f1e7d0', card: '#faf3e0', fg: '#34281a', accent: '#8c4a1f', accent2: '#d9b36a' },
-  { id: 'starlit', label: '별빛 남색', bg: '#0c1330', card: '#162049', fg: '#e8ecff', accent: '#ffd479', accent2: '#3a4a9a' },
   { id: 'moss', label: '이끼 숲', bg: '#eaf2e4', card: '#f7fbf3', fg: '#1f3220', accent: '#3f7d4a', accent2: '#bfdca8' },
   { id: 'seal', label: '먹과 붉은 인장', bg: '#f3f0ea', card: '#ffffff', fg: '#17171b', accent: '#c0302f', accent2: '#e2d6c3' },
 ]
@@ -20,6 +21,8 @@ const defaults = {
   notice: '이 세계관과 설정은 제작자의 오리지널 창작물입니다. 허락 없는 2차 가공과 AI 학습 사용을 금지합니다.',
   links: '설정 위키 | https://www.postype.com/\n트위터(X) | https://twitter.com/',
   ...paletteColors(PALETTES[0]),
+  ...fxDefaults,
+  ...fxOf(PALETTES[0]),
   displayFont: 'gowunbatang',
   bodyFont: 'pretendard',
 }
@@ -41,6 +44,7 @@ const fields = [
   ] },
   footerGroup,
   styleGroup(),
+  fxGroup,
 ]
 
 const RUNTIME = String.raw`

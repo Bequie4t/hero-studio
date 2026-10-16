@@ -124,7 +124,8 @@ export default function Editor({ template, shared }) {
   }
   const pickPalette = (p) => setCfg((c) => {
     const { id, label, ...vals } = p
-    return { ...c, ...vals }
+    const fxOff = Object.fromEntries(['fxStars', 'fxGrain', 'fxVignette', 'fxCursor'].filter((k) => k in c).map((k) => [k, false]))
+    return { ...c, ...fxOff, ...vals }
   })
 
   const renderItem = (it, i) => {

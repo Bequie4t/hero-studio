@@ -1,13 +1,15 @@
 import { cols, esc, hex, imgSrc, lines, list, multi, safeUrl } from './util.js'
 import { footerGroup, footerHtml, fontsOf, galleryHtml, linksHtml, noticeHtml, paletteColors, phHtml, shell, styleGroup } from './kobase.js'
+import { fxDefaults, fxGroup, fxOf } from './fx.js'
 
 // Template: 자캐 설정집 — a character reference sheet: portrait card, colour swatches (click to copy),
 // profile table, stat bars, quote, relations and a gallery.
 const PALETTES = [
   { id: 'sakura', label: '벚꽃 크림', bg: '#fff5f6', card: '#ffffff', fg: '#3b2a30', accent: '#e8648b', accent2: '#f7c6d3' },
-  { id: 'dawn', label: '새벽 라벤더', bg: '#1b1830', card: '#26223f', fg: '#ece8ff', accent: '#a78bfa', accent2: '#4a3f8f' },
+  { id: 'dawn', label: '새벽 라벤더', bg: '#1b1830', card: '#26223f', fg: '#ece8ff', accent: '#a78bfa', accent2: '#4a3f8f', fxStars: true, fxGrain: true, fxVignette: true },
   { id: 'mint', label: '민트 소다', bg: '#effaf6', card: '#ffffff', fg: '#1f3a34', accent: '#2fb89a', accent2: '#bfeede' },
-  { id: 'gothic', label: '고딕 블랙레드', bg: '#0e0b0c', card: '#1a1315', fg: '#f2e9e9', accent: '#d6354f', accent2: '#5b1823' },
+  { id: 'gothic', label: '고딕 블랙레드', bg: '#0e0b0c', card: '#1a1315', fg: '#f2e9e9', accent: '#d6354f', accent2: '#5b1823', fxStars: true, fxGrain: true, fxVignette: true },
+  { id: 'film', label: '달빛 필름', bg: '#0c0d10', card: '#16181d', fg: '#eceae4', accent: '#d8c7a0', accent2: '#3a3a40', fxGrain: true, fxVignette: true, fxStars: true },
 ]
 
 const defaults = {
@@ -29,6 +31,8 @@ const defaults = {
   notice: '이 캐릭터는 제작자의 오리지널 캐릭터(자캐)입니다. 2차 가공, 무단 도용, AI 학습 사용을 금지합니다. 교류와 커미션 문의는 환영해요.',
   links: '트위터(X) | https://twitter.com/\n포스타입 | https://www.postype.com/\n디스코드 | https://discord.com/',
   ...paletteColors(PALETTES[0]),
+  ...fxDefaults,
+  ...fxOf(PALETTES[0]),
   displayFont: 'gowunbatang',
   bodyFont: 'pretendard',
   decor: true,
@@ -59,6 +63,7 @@ const fields = [
   ] },
   footerGroup,
   (() => { const g = styleGroup(); g.items.push({ key: 'decor', label: '별 장식 넣기', type: 'check' }); return g })(),
+  fxGroup,
 ]
 
 const RUNTIME = String.raw`

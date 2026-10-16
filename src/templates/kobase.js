@@ -1,5 +1,6 @@
 import { koOptions, koStack } from '../fonts/ko-registry.js'
 import { cols, esc, fontHead, hex, imgs, initial, multi, safeUrl } from './util.js'
+import { fxCss, fxHtml, fxJs } from './fx.js'
 
 // Shared pieces for the Korean fan templates: colours, fonts, footer, links, gallery, notice.
 export const paletteColors = (p) => ({ bg: p.bg, card: p.card, fg: p.fg, accent: p.accent, accent2: p.accent2 })
@@ -110,7 +111,7 @@ export function shell({ c, d, title, desc, fontCss, css = '', body, script = '',
   const bg = hex(c.bg, d.bg), card = hex(c.card, d.card), fg = hex(c.fg, d.fg), accent = hex(c.accent, d.accent), accent2 = hex(c.accent2, d.accent2)
   const icon = encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="${accent}" d="M8 0l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>`)
   const hasGal = body.includes('class="gal"')
-  const js = [script, hasGal ? LIGHTBOX : ''].filter(Boolean).join('\n')
+  const js = [script, hasGal ? LIGHTBOX : '', fxJs(c)].filter(Boolean).join('\n')
   return `<!doctype html>
 <html lang="ko">
 <head>
@@ -126,10 +127,11 @@ export function shell({ c, d, title, desc, fontCss, css = '', body, script = '',
 <link rel="icon" href="data:image/svg+xml,${icon}">
 ${fontHead(fontCss, '')}
 <style>
-:root{--bg:${bg};--card:${card};--fg:${fg};--accent:${accent};--accent2:${accent2};--display:${koStack(c.displayFont)};--body:${koStack(c.bodyFont)};--dim:color-mix(in srgb,var(--fg) 62%,var(--bg));--line:color-mix(in srgb,var(--fg) 14%,var(--bg))}${BASE}${css}</style>
+:root{--bg:${bg};--card:${card};--fg:${fg};--accent:${accent};--accent2:${accent2};--display:${koStack(c.displayFont)};--body:${koStack(c.bodyFont)};--dim:color-mix(in srgb,var(--fg) 62%,var(--bg));--line:color-mix(in srgb,var(--fg) 14%,var(--bg))}${BASE}${css}
+${fxCss(c)}</style>
 </head>
 <body>
-${body}
+${fxHtml(c)}${body}
 ${hasGal ? '<dialog id="lb" aria-label="이미지 크게 보기"><img alt=""><button type="button">닫기</button></dialog>' : ''}
 ${cfg ? `<script type="application/json" id="cfg">${cfg}</script>` : ''}${js ? `<script>${js}</script>` : ''}
 </body>
