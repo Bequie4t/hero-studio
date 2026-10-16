@@ -3,10 +3,10 @@ import { clamp, esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUr
 
 // Template: centred SaaS hero with a slow gradient orb rising from the bottom edge.
 const PALETTES = [
-  { id: 'dusk', label: 'Dusk', bg: '#0e0b1a', fg: '#f4f1ff', c1: '#7c5cff', c2: '#ff5ca8', c3: '#3dd6c6' },
-  { id: 'dawn', label: 'Dawn', bg: '#fff6ee', fg: '#25140d', c1: '#ff8a4c', c2: '#ffcf5c', c3: '#ff5c7a' },
-  { id: 'lagoon', label: 'Lagoon', bg: '#06151a', fg: '#e8fbff', c1: '#19c6d9', c2: '#3b82f6', c3: '#a3e635' },
-  { id: 'cloud', label: 'Cloud', bg: '#f5f7fb', fg: '#10131a', c1: '#6d8dff', c2: '#b79bff', c3: '#7fe3d3' },
+  { id: 'dusk', label: '해질녘', bg: '#0e0b1a', fg: '#f4f1ff', c1: '#7c5cff', c2: '#ff5ca8', c3: '#3dd6c6' },
+  { id: 'dawn', label: '새벽', bg: '#fff6ee', fg: '#25140d', c1: '#ff8a4c', c2: '#ffcf5c', c3: '#ff5c7a' },
+  { id: 'lagoon', label: '라군', bg: '#06151a', fg: '#e8fbff', c1: '#19c6d9', c2: '#3b82f6', c3: '#a3e635' },
+  { id: 'cloud', label: '구름', bg: '#f5f7fb', fg: '#10131a', c1: '#6d8dff', c2: '#b79bff', c3: '#7fe3d3' },
 ]
 
 const FONTS = [
@@ -43,27 +43,27 @@ const defaults = {
 }
 
 const fields = [
-  { group: 'Content', open: true, items: [
-    { key: 'brand', label: 'Brand name', type: 'text' },
-    { key: 'badge', label: 'Badge', type: 'text', hint: 'Small pill above the headline. Leave empty to hide.' },
-    { key: 'heading', label: 'Headline', type: 'textarea', rows: 2, hint: 'One line per row, up to 3.' },
-    { key: 'subtitle', label: 'Subtitle', type: 'textarea', rows: 3 },
-    { key: 'nav', label: 'Menu', type: 'text', hint: 'Comma separated.' },
-    { key: 'cta', label: 'Button text', type: 'text', half: true },
-    { key: 'ctaUrl', label: 'Button link', type: 'text', half: true },
-    { key: 'link', label: 'Second link', type: 'text', half: true },
-    { key: 'linkUrl', label: 'Second URL', type: 'text', half: true },
-    { key: 'shot', label: 'Product screenshot', type: 'image', hint: 'Shown under the buttons in a frame.' },
-    { key: 'shotAlt', label: 'Screenshot description', type: 'text', hint: 'Read aloud by screen readers.' },
-    { key: 'logosLabel', label: 'Logo strip label', type: 'text' },
-    { key: 'logos', label: 'Customer names', type: 'text', hint: 'Comma separated.' },
+  { group: '내용', open: true, items: [
+    { key: 'brand', label: '브랜드 이름', type: 'text' },
+    { key: 'badge', label: '배지', type: 'text', hint: '제목 위의 작은 알약 모양 문구예요. 비우면 숨겨요.' },
+    { key: 'heading', label: '제목', type: 'textarea', rows: 2, hint: '한 줄에 한 행, 최대 3줄까지.' },
+    { key: 'subtitle', label: '소제목', type: 'textarea', rows: 3 },
+    { key: 'nav', label: '메뉴', type: 'text', hint: '쉼표(,)로 구분해요.' },
+    { key: 'cta', label: '버튼 문구', type: 'text', half: true },
+    { key: 'ctaUrl', label: '버튼 링크', type: 'text', half: true },
+    { key: 'link', label: '보조 링크', type: 'text', half: true },
+    { key: 'linkUrl', label: '보조 링크 주소', type: 'text', half: true },
+    { key: 'shot', label: '제품 화면 이미지', type: 'image', hint: '버튼 아래에 액자처럼 보여요.' },
+    { key: 'shotAlt', label: '화면 이미지 설명', type: 'text', hint: '화면 낭독기가 읽어 주는 설명이에요.' },
+    { key: 'logosLabel', label: '로고 줄 문구', type: 'text' },
+    { key: 'logos', label: '고객사 이름', type: 'text', hint: '쉼표(,)로 구분해요.' },
   ] },
-  { group: 'Style', open: true, items: [
+  { group: '스타일', open: true, items: [
     { type: 'palette' },
     { type: 'colors', keys: [['bg', 'Background'], ['fg', 'Text']] },
     { type: 'colors', keys: [['c1', 'Orb 1'], ['c2', 'Orb 2'], ['c3', 'Orb 3']] },
-    { key: 'font', label: 'Font', type: 'select', options: FONTS },
-    { key: 'speed', label: 'Orb speed', type: 'range', min: 1, max: 10 },
+    { key: 'font', label: '폰트', type: 'select', options: FONTS },
+    { key: 'speed', label: '오브 속도', type: 'range', min: 1, max: 10 },
   ] },
   ...sectionFields,
 ]
@@ -153,9 +153,10 @@ ${sx.html}
 
 export default {
   id: 'orbit',
-  name: 'Soft Orbit',
-  blurb: 'A calm centred SaaS hero with a slow gradient orb.',
-  tag: 'SaaS',
+  group: '일반',
+  name: '소프트 오브',
+  blurb: '은은한 그라디언트 오브가 도는 서비스 소개 히어로.',
+  tag: '서비스',
   defaults,
   fields,
   palettes: PALETTES,

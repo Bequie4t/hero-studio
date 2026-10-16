@@ -3,10 +3,10 @@ import { esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug
 
 // Template: editorial portfolio hero (oversized name, availability pill, project index).
 const PALETTES = [
-  { id: 'cream', label: 'Cream', bg: '#efe9df', fg: '#1b1a17', accent: '#d9461f' },
-  { id: 'ink', label: 'Ink', bg: '#111111', fg: '#f1efe9', accent: '#c8ff3d' },
-  { id: 'sky', label: 'Sky', bg: '#dfeaf5', fg: '#0f1b2d', accent: '#3b6cf6' },
-  { id: 'blush', label: 'Blush', bg: '#f6e3e0', fg: '#2a1214', accent: '#c2314d' },
+  { id: 'cream', label: '크림', bg: '#efe9df', fg: '#1b1a17', accent: '#d9461f' },
+  { id: 'ink', label: '먹', bg: '#111111', fg: '#f1efe9', accent: '#c8ff3d' },
+  { id: 'sky', label: '하늘', bg: '#dfeaf5', fg: '#0f1b2d', accent: '#3b6cf6' },
+  { id: 'blush', label: '블러시', bg: '#f6e3e0', fg: '#2a1214', accent: '#c2314d' },
 ]
 
 const FONTS = [
@@ -39,25 +39,25 @@ const defaults = {
 }
 
 const fields = [
-  { group: 'Content', open: true, items: [
-    { key: 'brand', label: 'Your name', type: 'text' },
-    { key: 'status', label: 'Availability', type: 'text', hint: 'Small pill at the top. Leave empty to hide.' },
-    { key: 'heading', label: 'Headline', type: 'textarea', rows: 3, hint: 'One line per row, up to 3.' },
-    { key: 'subtitle', label: 'Intro', type: 'textarea', rows: 3 },
-    { key: 'photo', label: 'Portrait', type: 'image', hint: 'Shown beside your name in an arch.' },
-    { key: 'photoAlt', label: 'Portrait description', type: 'text', hint: 'Read aloud by screen readers.' },
-    { key: 'nav', label: 'Menu', type: 'text', hint: 'Comma separated.' },
-    { key: 'cta', label: 'Button text', type: 'text', half: true },
-    { key: 'ctaUrl', label: 'Button link', type: 'text', half: true },
+  { group: '내용', open: true, items: [
+    { key: 'brand', label: '이름', type: 'text' },
+    { key: 'status', label: '작업 가능 안내', type: 'text', hint: '위쪽 작은 알약 모양 문구예요. 비우면 숨겨요.' },
+    { key: 'heading', label: '제목', type: 'textarea', rows: 3, hint: '한 줄에 한 행, 최대 3줄까지.' },
+    { key: 'subtitle', label: '소개', type: 'textarea', rows: 3 },
+    { key: 'photo', label: '인물 사진', type: 'image', hint: '이름 옆에 아치 모양으로 보여요.' },
+    { key: 'photoAlt', label: '사진 설명', type: 'text', hint: '화면 낭독기가 읽어 주는 설명이에요.' },
+    { key: 'nav', label: '메뉴', type: 'text', hint: '쉼표(,)로 구분해요.' },
+    { key: 'cta', label: '버튼 문구', type: 'text', half: true },
+    { key: 'ctaUrl', label: '버튼 링크', type: 'text', half: true },
   ] },
-  { group: 'Projects', open: true, items: [
-    { key: 'projectsTitle', label: 'Title', type: 'text' },
-    { key: 'projects', label: 'Projects', type: 'textarea', rows: 6, hint: 'One per line: Name | Type | Year (up to 8).' },
+  { group: '프로젝트', open: true, items: [
+    { key: 'projectsTitle', label: '제목', type: 'text' },
+    { key: 'projects', label: '프로젝트', type: 'textarea', rows: 6, hint: '한 줄에 하나: 이름 | 종류 | 연도 (최대 8개)' },
   ] },
-  { group: 'Style', items: [
+  { group: '스타일', items: [
     { type: 'palette' },
     { type: 'colors', keys: [['bg', 'Background'], ['fg', 'Text'], ['accent', 'Accent']] },
-    { key: 'font', label: 'Font', type: 'select', options: FONTS },
+    { key: 'font', label: '폰트', type: 'select', options: FONTS },
   ] },
   ...sectionFields,
 ]
@@ -146,9 +146,10 @@ ${sx.html}
 
 export default {
   id: 'folio',
-  name: 'Folio',
-  blurb: 'An editorial portfolio page with an oversized name and project index.',
-  tag: 'Portfolio',
+  group: '일반',
+  name: '폴리오',
+  blurb: '큰 이름과 프로젝트 목록이 있는 포트폴리오.',
+  tag: '포트폴리오',
   defaults,
   fields,
   palettes: PALETTES,

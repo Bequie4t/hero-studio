@@ -21,7 +21,16 @@ export const MONO_FONTS = [
 export const fontHead = (fontCss, href) =>
   fontCss
     ? `<style id="fonts">${fontCss}</style>`
+    : !href
+    ? ''
     : `<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="${href}">`
 
 // Only embedded raster images are accepted, so an uploaded field can never carry markup.
 export const imgSrc = (u) => (/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(String(u || '')) ? u : '')
+
+// Line-based fields: "one item per line", columns separated by "|".
+export const lines = (s, max = 99) => String(s ?? '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, max)
+export const cols = (l) => String(l).split('|').map((s) => s.trim())
+export const imgs = (arr, max = 8) => (Array.isArray(arr) ? arr : []).map(imgSrc).filter(Boolean).slice(0, max)
+export const initial = (s) => ([...String(s || '?').trim()][0] || '?')
+export const ymd = (s) => (/^\d{4}-\d{2}-\d{2}$/.test(String(s)) ? String(s) : '')

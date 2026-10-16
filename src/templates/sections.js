@@ -18,20 +18,20 @@ export const sectionDefaults = {
 }
 
 export const sectionFields = [
-  { group: 'Features section', items: [
-    { key: 'featuresOn', label: 'Show features', type: 'check' },
-    { key: 'featuresTitle', label: 'Title', type: 'text' },
-    { key: 'features', label: 'Features', type: 'textarea', rows: 6, hint: 'One per line: Title | Description (up to 6).' },
+  { group: '기능 소개 섹션', items: [
+    { key: 'featuresOn', label: '기능 소개 보이기', type: 'check' },
+    { key: 'featuresTitle', label: '제목', type: 'text' },
+    { key: 'features', label: '기능', type: 'textarea', rows: 6, hint: '한 줄에 하나: 제목 | 설명 (최대 6개)' },
   ] },
-  { group: 'Pricing section', items: [
-    { key: 'pricingOn', label: 'Show pricing', type: 'check' },
-    { key: 'pricingTitle', label: 'Title', type: 'text' },
-    { key: 'plans', label: 'Plans', type: 'textarea', rows: 6, hint: 'One per line: Name | Price | Blurb | Perk;Perk. Start a line with * to highlight it (up to 4).' },
+  { group: '가격표 섹션', items: [
+    { key: 'pricingOn', label: '가격표 보이기', type: 'check' },
+    { key: 'pricingTitle', label: '제목', type: 'text' },
+    { key: 'plans', label: '요금제', type: 'textarea', rows: 6, hint: '한 줄에 하나: 이름 | 가격 | 설명 | 항목;항목 (최대 4개). 줄 맨 앞에 *를 붙이면 강조돼요.' },
   ] },
-  { group: 'Footer', items: [
-    { key: 'footerOn', label: 'Show footer', type: 'check' },
-    { key: 'footerText', label: 'Footer text', type: 'text' },
-    { key: 'footerLinks', label: 'Footer links', type: 'text', hint: 'Comma separated.' },
+  { group: '푸터', items: [
+    { key: 'footerOn', label: '푸터 보이기', type: 'check' },
+    { key: 'footerText', label: '푸터 문구', type: 'text' },
+    { key: 'footerLinks', label: '푸터 링크', type: 'text', hint: '쉼표(,)로 구분해요.' },
   ] },
 ]
 

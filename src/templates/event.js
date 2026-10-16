@@ -3,10 +3,10 @@ import { esc, fontHead, fontsHref, hex, jsonForScript, list, multi, pick, safeUr
 
 // Template: event page with a live countdown and a speaker grid.
 const PALETTES = [
-  { id: 'lime', label: 'Lime', bg: '#0d0f0a', fg: '#f3f5ec', accent: '#c8ff3d' },
-  { id: 'paper', label: 'Paper', bg: '#f4efe6', fg: '#1a1612', accent: '#e0432a' },
-  { id: 'gold', label: 'Gold', bg: '#0b1226', fg: '#eef1fb', accent: '#f5b942' },
-  { id: 'lilac', label: 'Lilac', bg: '#efe9ff', fg: '#1d1535', accent: '#6c47ff' },
+  { id: 'lime', label: '라임', bg: '#0d0f0a', fg: '#f3f5ec', accent: '#c8ff3d' },
+  { id: 'paper', label: '종이', bg: '#f4efe6', fg: '#1a1612', accent: '#e0432a' },
+  { id: 'gold', label: '골드', bg: '#0b1226', fg: '#eef1fb', accent: '#f5b942' },
+  { id: 'lilac', label: '라일락', bg: '#efe9ff', fg: '#1d1535', accent: '#6c47ff' },
 ]
 
 const FONTS = [
@@ -41,26 +41,26 @@ const defaults = {
 }
 
 const fields = [
-  { group: 'Event', open: true, items: [
-    { key: 'brand', label: 'Event name', type: 'text' },
-    { key: 'eyebrow', label: 'Tagline', type: 'text', hint: 'Small line above the headline.' },
-    { key: 'heading', label: 'Headline', type: 'textarea', rows: 2, hint: 'One line per row, up to 3.' },
-    { key: 'subtitle', label: 'Description', type: 'textarea', rows: 3 },
-    { key: 'date', label: 'Starts', type: 'datetime', hint: 'The countdown uses each visitor\'s own time zone.' },
-    { key: 'place', label: 'Place', type: 'text' },
-    { key: 'doneText', label: 'Text after it starts', type: 'text' },
-    { key: 'nav', label: 'Menu', type: 'text', hint: 'Comma separated.' },
-    { key: 'cta', label: 'Button text', type: 'text', half: true },
-    { key: 'ctaUrl', label: 'Button link', type: 'text', half: true },
+  { group: '행사', open: true, items: [
+    { key: 'brand', label: '행사 이름', type: 'text' },
+    { key: 'eyebrow', label: '한 줄 소개', type: 'text', hint: '제목 위에 들어가는 작은 문구예요.' },
+    { key: 'heading', label: '제목', type: 'textarea', rows: 2, hint: '한 줄에 한 행, 최대 3줄까지.' },
+    { key: 'subtitle', label: '설명', type: 'textarea', rows: 3 },
+    { key: 'date', label: '시작 시각', type: 'datetime', hint: 'The countdown uses each visitor\'s own time zone.' },
+    { key: 'place', label: '장소', type: 'text' },
+    { key: 'doneText', label: '시작 후 문구', type: 'text' },
+    { key: 'nav', label: '메뉴', type: 'text', hint: '쉼표(,)로 구분해요.' },
+    { key: 'cta', label: '버튼 문구', type: 'text', half: true },
+    { key: 'ctaUrl', label: '버튼 링크', type: 'text', half: true },
   ] },
-  { group: 'Speakers', open: true, items: [
-    { key: 'speakersTitle', label: 'Title', type: 'text' },
-    { key: 'speakers', label: 'Speakers', type: 'textarea', rows: 6, hint: 'One per line: Name | Role (up to 8).' },
+  { group: '연사', open: true, items: [
+    { key: 'speakersTitle', label: '제목', type: 'text' },
+    { key: 'speakers', label: '연사', type: 'textarea', rows: 6, hint: '한 줄에 하나: 이름 | 역할 (최대 8개)' },
   ] },
-  { group: 'Style', items: [
+  { group: '스타일', items: [
     { type: 'palette' },
     { type: 'colors', keys: [['bg', 'Background'], ['fg', 'Text'], ['accent', 'Accent']] },
-    { key: 'font', label: 'Font', type: 'select', options: FONTS },
+    { key: 'font', label: '폰트', type: 'select', options: FONTS },
   ] },
   ...sectionFields,
 ]
@@ -196,9 +196,10 @@ ${sx.html}
 
 export default {
   id: 'event',
-  name: 'Event Countdown',
-  blurb: 'An event page with a live countdown, speakers and tickets.',
-  tag: 'Event',
+  group: '일반',
+  name: '이벤트 카운트다운',
+  blurb: '실시간 카운트다운, 연사, 티켓이 있는 행사 페이지.',
+  tag: '행사',
   defaults,
   fields,
   palettes: PALETTES,

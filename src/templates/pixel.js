@@ -1,9 +1,9 @@
 // Template: pixel mascot hero (scanline mascot, typewriter speech bubble, ticker strip).
 const PALETTES = [
-  { id: 'paper', label: 'Paper', bg: '#f1f1ee', fg: '#0a0a0a', accent: '#0a0a0a' },
-  { id: 'mint', label: 'Mint', bg: '#e6f4ec', fg: '#0b2a1e', accent: '#10b981' },
-  { id: 'peach', label: 'Peach', bg: '#fff0e3', fg: '#2b1608', accent: '#ff6a3d' },
-  { id: 'night', label: 'Night', bg: '#0c0d12', fg: '#eaeaf0', accent: '#7cf3c5' },
+  { id: 'paper', label: '종이', bg: '#f1f1ee', fg: '#0a0a0a', accent: '#0a0a0a' },
+  { id: 'mint', label: '민트', bg: '#e6f4ec', fg: '#0b2a1e', accent: '#10b981' },
+  { id: 'peach', label: '복숭아', bg: '#fff0e3', fg: '#2b1608', accent: '#ff6a3d' },
+  { id: 'night', label: '밤', bg: '#0c0d12', fg: '#eaeaf0', accent: '#7cf3c5' },
 ]
 const DISPLAY_FONTS = [
   { id: 'pixelify', label: 'Pixelify Sans', css: "'Pixelify Sans'", q: 'Pixelify+Sans:wght@500;700' },
@@ -37,32 +37,32 @@ const defaults = {
   tickerItems: 'Sorts mail, Books meetings, Guards focus, Drafts replies, Chases invoices',
 }
 const fields = [
-  { group: 'Content', open: true, items: [
-    { key: 'brand', label: 'Brand name', type: 'text' },
-    { key: 'heading', label: 'Headline', type: 'textarea', rows: 2, hint: 'One line per row, up to 3.' },
-    { key: 'subtitle', label: 'Subtitle', type: 'textarea', rows: 3 },
-    { key: 'nav', label: 'Menu', type: 'text', hint: 'Comma separated.' },
-    { key: 'cta', label: 'Button text', type: 'text', half: true },
-    { key: 'ctaUrl', label: 'Button link', type: 'text', half: true },
-    { key: 'link', label: 'Second link', type: 'text', half: true },
-    { key: 'linkUrl', label: 'Second URL', type: 'text', half: true },
-    { key: 'stats', label: 'Stats', type: 'text', hint: 'Comma separated.' },
+  { group: '내용', open: true, items: [
+    { key: 'brand', label: '브랜드 이름', type: 'text' },
+    { key: 'heading', label: '제목', type: 'textarea', rows: 2, hint: '한 줄에 한 행, 최대 3줄까지.' },
+    { key: 'subtitle', label: '소제목', type: 'textarea', rows: 3 },
+    { key: 'nav', label: '메뉴', type: 'text', hint: '쉼표(,)로 구분해요.' },
+    { key: 'cta', label: '버튼 문구', type: 'text', half: true },
+    { key: 'ctaUrl', label: '버튼 링크', type: 'text', half: true },
+    { key: 'link', label: '보조 링크', type: 'text', half: true },
+    { key: 'linkUrl', label: '보조 링크 주소', type: 'text', half: true },
+    { key: 'stats', label: '수치', type: 'text', hint: '쉼표(,)로 구분해요.' },
   ] },
-  { group: 'Mascot', open: true, items: [
-    { key: 'mascot', label: 'Mascot', type: 'choice', options: Object.entries(SPRITES).map(([id, s]) => ({ id, label: s.label })) },
-    { key: 'bubbles', label: 'Speech bubble', type: 'textarea', rows: 6, hint: 'Separate messages with a line containing ---' },
-    { key: 'lines', label: 'Scanline detail', type: 'range', min: 3, max: 8 },
-    { key: 'layout', label: 'Layout', type: 'choice', options: [{ id: 'right', label: 'Mascot right' }, { id: 'left', label: 'Mascot left' }] },
+  { group: '마스코트', open: true, items: [
+    { key: 'mascot', label: '마스코트', type: 'choice', options: Object.entries(SPRITES).map(([id, s]) => ({ id, label: s.label })) },
+    { key: 'bubbles', label: '말풍선', type: 'textarea', rows: 6, hint: '메시지는 --- 만 적은 줄로 나눠요.' },
+    { key: 'lines', label: '스캔라인 굵기', type: 'range', min: 3, max: 8 },
+    { key: 'layout', label: '배치', type: 'choice', options: [{ id: 'right', label: '마스코트 오른쪽' }, { id: 'left', label: '마스코트 왼쪽' }] },
   ] },
-  { group: 'Style', items: [
+  { group: '스타일', items: [
     { type: 'palette' },
     { type: 'colors', keys: [['bg', 'Background'], ['fg', 'Text'], ['accent', 'Accent']] },
-    { key: 'displayFont', label: 'Heading font', type: 'select', options: DISPLAY_FONTS },
-    { key: 'bodyFont', label: 'Body font', type: 'select', options: MONO_FONTS },
+    { key: 'displayFont', label: '제목 폰트', type: 'select', options: DISPLAY_FONTS },
+    { key: 'bodyFont', label: '본문 폰트', type: 'select', options: MONO_FONTS },
   ] },
-  { group: 'Ticker strip', items: [
-    { key: 'ticker', label: 'Show scrolling strip', type: 'check' },
-    { key: 'tickerItems', label: 'Items', type: 'text', hint: 'Comma separated.' },
+  { group: '흐르는 띠', items: [
+    { key: 'ticker', label: '흐르는 띠 보이기', type: 'check' },
+    { key: 'tickerItems', label: '항목', type: 'text', hint: '쉼표(,)로 구분해요.' },
   ] },
   ...sectionFields,
 ]
@@ -253,9 +253,10 @@ ${sx.html}
 
 export default {
   id: 'pixel',
-  name: 'Pixel Mascot',
-  blurb: 'A scanline pixel mascot with a talking speech bubble.',
-  tag: 'AI agent',
+  group: '일반',
+  name: '픽셀 마스코트',
+  blurb: '스캔라인 픽셀 마스코트와 말하는 말풍선.',
+  tag: 'AI 에이전트',
   defaults,
   fields,
   palettes: PALETTES,

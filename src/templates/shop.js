@@ -3,10 +3,10 @@ import { esc, fontHead, fontsHref, hex, imgSrc, list, multi, pick, safeUrl, slug
 
 // Template: storefront product hero (photo, price, rating, perks).
 const PALETTES = [
-  { id: 'clay', label: 'Clay', bg: '#f3ece4', fg: '#2a1d16', accent: '#c4572f' },
-  { id: 'moss', label: 'Moss', bg: '#e9eee3', fg: '#1d2a1c', accent: '#4f7a3a' },
-  { id: 'ink', label: 'Ink', bg: '#101113', fg: '#f1efe8', accent: '#e8b04a' },
-  { id: 'sky', label: 'Sky', bg: '#e6eef6', fg: '#14202e', accent: '#2f6fb7' },
+  { id: 'clay', label: '점토', bg: '#f3ece4', fg: '#2a1d16', accent: '#c4572f' },
+  { id: 'moss', label: '이끼', bg: '#e9eee3', fg: '#1d2a1c', accent: '#4f7a3a' },
+  { id: 'ink', label: '먹', bg: '#101113', fg: '#f1efe8', accent: '#e8b04a' },
+  { id: 'sky', label: '하늘', bg: '#e6eef6', fg: '#14202e', accent: '#2f6fb7' },
 ]
 
 const FONTS = [
@@ -44,30 +44,30 @@ const defaults = {
 }
 
 const fields = [
-  { group: 'Product', open: true, items: [
-    { key: 'brand', label: 'Shop name', type: 'text' },
-    { key: 'badge', label: 'Badge', type: 'text', hint: 'Leave empty to hide.' },
-    { key: 'heading', label: 'Product headline', type: 'textarea', rows: 2, hint: 'One line per row, up to 3.' },
-    { key: 'subtitle', label: 'Description', type: 'textarea', rows: 3 },
-    { key: 'photo', label: 'Product photo', type: 'image', hint: 'Resized in your browser and stored inside the file.' },
-    { key: 'photoAlt', label: 'Photo description', type: 'text', hint: 'Read aloud by screen readers.' },
-    { key: 'price', label: 'Price', type: 'text', half: true },
-    { key: 'comparePrice', label: 'Old price', type: 'text', half: true },
-    { key: 'rating', label: 'Rating', type: 'text', half: true },
-    { key: 'reviews', label: 'Review count', type: 'text', half: true },
-    { key: 'perks', label: 'Perks', type: 'text', hint: 'Comma separated.' },
+  { group: '상품', open: true, items: [
+    { key: 'brand', label: '가게 이름', type: 'text' },
+    { key: 'badge', label: '배지', type: 'text', hint: '비우면 숨겨요.' },
+    { key: 'heading', label: '상품 제목', type: 'textarea', rows: 2, hint: '한 줄에 한 행, 최대 3줄까지.' },
+    { key: 'subtitle', label: '설명', type: 'textarea', rows: 3 },
+    { key: 'photo', label: '상품 사진', type: 'image', hint: '브라우저에서 줄여서 파일 안에 넣어요.' },
+    { key: 'photoAlt', label: '사진 설명', type: 'text', hint: '화면 낭독기가 읽어 주는 설명이에요.' },
+    { key: 'price', label: '가격', type: 'text', half: true },
+    { key: 'comparePrice', label: '정가', type: 'text', half: true },
+    { key: 'rating', label: '평점', type: 'text', half: true },
+    { key: 'reviews', label: '후기 수', type: 'text', half: true },
+    { key: 'perks', label: '장점', type: 'text', hint: '쉼표(,)로 구분해요.' },
   ] },
-  { group: 'Buttons and menu', items: [
-    { key: 'nav', label: 'Menu', type: 'text', hint: 'Comma separated.' },
-    { key: 'cta', label: 'Button text', type: 'text', half: true },
-    { key: 'ctaUrl', label: 'Button link', type: 'text', half: true },
-    { key: 'link', label: 'Second link', type: 'text', half: true },
-    { key: 'linkUrl', label: 'Second URL', type: 'text', half: true },
+  { group: '버튼과 메뉴', items: [
+    { key: 'nav', label: '메뉴', type: 'text', hint: '쉼표(,)로 구분해요.' },
+    { key: 'cta', label: '버튼 문구', type: 'text', half: true },
+    { key: 'ctaUrl', label: '버튼 링크', type: 'text', half: true },
+    { key: 'link', label: '보조 링크', type: 'text', half: true },
+    { key: 'linkUrl', label: '보조 링크 주소', type: 'text', half: true },
   ] },
-  { group: 'Style', items: [
+  { group: '스타일', items: [
     { type: 'palette' },
     { type: 'colors', keys: [['bg', 'Background'], ['fg', 'Text'], ['accent', 'Accent']] },
-    { key: 'font', label: 'Font', type: 'select', options: FONTS },
+    { key: 'font', label: '폰트', type: 'select', options: FONTS },
   ] },
   ...sectionFields,
 ]
@@ -165,9 +165,10 @@ ${sx.html}
 
 export default {
   id: 'shop',
-  name: 'Storefront',
-  blurb: 'A product page hero with your photo, price, rating and perks.',
-  tag: 'Shop',
+  group: '일반',
+  name: '스토어프론트',
+  blurb: '사진, 가격, 평점, 장점을 보여 주는 상품 페이지.',
+  tag: '쇼핑',
   defaults,
   fields,
   palettes: PALETTES,

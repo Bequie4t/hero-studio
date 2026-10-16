@@ -3,10 +3,10 @@ import { clamp, esc, fontHead, fontsHref, hex, jsonForScript, list, MONO_FONTS, 
 
 // Template: terminal launch page (live-typing terminal window next to the pitch).
 const PALETTES = [
-  { id: 'phosphor', label: 'Phosphor', bg: '#0b100d', fg: '#d8f5e2', accent: '#4ade80' },
-  { id: 'amber', label: 'Amber', bg: '#120d06', fg: '#fde8c8', accent: '#fbbf24' },
-  { id: 'ice', label: 'Ice', bg: '#0a1018', fg: '#dbe9fb', accent: '#60a5fa' },
-  { id: 'chalk', label: 'Chalk', bg: '#f3f2ee', fg: '#15151a', accent: '#e4572e' },
+  { id: 'phosphor', label: '형광 초록', bg: '#0b100d', fg: '#d8f5e2', accent: '#4ade80' },
+  { id: 'amber', label: '호박색', bg: '#120d06', fg: '#fde8c8', accent: '#fbbf24' },
+  { id: 'ice', label: '얼음', bg: '#0a1018', fg: '#dbe9fb', accent: '#60a5fa' },
+  { id: 'chalk', label: '분필', bg: '#f3f2ee', fg: '#15151a', accent: '#e4572e' },
 ]
 
 const defaults = {
@@ -33,26 +33,26 @@ const defaults = {
 }
 
 const fields = [
-  { group: 'Content', open: true, items: [
-    { key: 'brand', label: 'Brand name', type: 'text' },
-    { key: 'heading', label: 'Headline', type: 'textarea', rows: 2, hint: 'One line per row, up to 3.' },
-    { key: 'subtitle', label: 'Subtitle', type: 'textarea', rows: 3 },
-    { key: 'nav', label: 'Menu', type: 'text', hint: 'Comma separated.' },
-    { key: 'cta', label: 'Button text', type: 'text', half: true },
-    { key: 'ctaUrl', label: 'Button link', type: 'text', half: true },
-    { key: 'link', label: 'Second link', type: 'text', half: true },
-    { key: 'linkUrl', label: 'Second URL', type: 'text', half: true },
-    { key: 'stats', label: 'Facts', type: 'text', hint: 'Comma separated.' },
+  { group: '내용', open: true, items: [
+    { key: 'brand', label: '브랜드 이름', type: 'text' },
+    { key: 'heading', label: '제목', type: 'textarea', rows: 2, hint: '한 줄에 한 행, 최대 3줄까지.' },
+    { key: 'subtitle', label: '소제목', type: 'textarea', rows: 3 },
+    { key: 'nav', label: '메뉴', type: 'text', hint: '쉼표(,)로 구분해요.' },
+    { key: 'cta', label: '버튼 문구', type: 'text', half: true },
+    { key: 'ctaUrl', label: '버튼 링크', type: 'text', half: true },
+    { key: 'link', label: '보조 링크', type: 'text', half: true },
+    { key: 'linkUrl', label: '보조 링크 주소', type: 'text', half: true },
+    { key: 'stats', label: '특징', type: 'text', hint: '쉼표(,)로 구분해요.' },
   ] },
-  { group: 'Terminal', open: true, items: [
-    { key: 'install', label: 'Install command', type: 'text', hint: 'Shown with a copy button.' },
-    { key: 'script', label: 'Terminal script', type: 'textarea', rows: 8, hint: 'Lines starting with "$ " are typed. Other lines print as output.' },
-    { key: 'scan', label: 'CRT scanlines', type: 'check' },
+  { group: '터미널', open: true, items: [
+    { key: 'install', label: '설치 명령어', type: 'text', hint: '복사 버튼과 함께 보여요.' },
+    { key: 'script', label: '터미널 스크립트', type: 'textarea', rows: 8, hint: '"$ "로 시작하는 줄은 타이핑되고, 나머지는 출력으로 표시돼요.' },
+    { key: 'scan', label: 'CRT 스캔라인', type: 'check' },
   ] },
-  { group: 'Style', items: [
+  { group: '스타일', items: [
     { type: 'palette' },
     { type: 'colors', keys: [['bg', 'Background'], ['fg', 'Text'], ['accent', 'Accent']] },
-    { key: 'bodyFont', label: 'Font', type: 'select', options: MONO_FONTS },
+    { key: 'bodyFont', label: '폰트', type: 'select', options: MONO_FONTS },
   ] },
   ...sectionFields,
 ]
@@ -194,9 +194,10 @@ ${sx.html}
 
 export default {
   id: 'terminal',
-  name: 'Terminal Launch',
-  blurb: 'A developer-tool landing page with a live-typing terminal.',
-  tag: 'Developer tool',
+  group: '일반',
+  name: '터미널 런치',
+  blurb: '타이핑되는 터미널이 있는 개발 도구 소개 페이지.',
+  tag: '개발 도구',
   defaults,
   fields,
   palettes: PALETTES,
